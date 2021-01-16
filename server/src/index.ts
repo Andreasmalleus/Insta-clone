@@ -8,6 +8,7 @@ import { Like } from "./entities/Like";
 import { Comment } from "./entities/Comment";
 import { ApolloServer } from "apollo-server-express";
 import { buildSchema } from "type-graphql";
+import { UserResolver } from "./resolvers/user";
 
 const main = async () => {
     await createConnection({
@@ -21,7 +22,7 @@ const main = async () => {
 
     const apolloServer = new ApolloServer({
         schema : await buildSchema({
-            resolvers : [],
+            resolvers : [UserResolver],
             validate : false  
         }),
     })
