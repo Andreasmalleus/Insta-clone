@@ -1,0 +1,22 @@
+{
+    "compilerOptions": {
+      "module": "commonjs",
+      "outDir": "./dist",
+      "target": "ES6",
+      "strictNullChecks": true,
+      "strictFunctionTypes": true,
+      "removeComments": true,
+      "noUnusedLocals": true,
+      "noUnusedParameters": true,
+      "noImplicitAny": true,
+      "noImplicitReturns": true,
+      "noImplicitThis": true,
+      "sourceMap": true,
+      "esModuleInterop": true
+    },
+    "include": [
+        "./src/**/*.ts",
+        "./src/**/*.tsx"
+    ],
+    "exclude": ["node_modules"]
+    }
