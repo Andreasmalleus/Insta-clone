@@ -6,15 +6,28 @@ import { User } from "./entities/User";
 import { Post } from "./entities/Post";
 import { Like } from "./entities/Like";
 import { Comment } from "./entities/Comment";
+import { ApolloServer } from "apollo-server-express";
+import { buildSchema } from "type-graphql";
 
 const main = async () => {
-    const app = express();
-
-    const connection = await createConnection({
+    await createConnection({
         type : 'postgres',
         url : process.env.DATABASE_URL,
         synchronize : true,
         entities : [User, Post, Like, Comment]
+    })
+
+    const app = express();
+
+    const apolloServer = new ApolloServer({
+        schema : await buildSchema({
+            resolvers : [],
+            validate : false  
+        }),
+    })
+
+    apolloServer.applyMiddleware({
+        app
     })
 
     app.listen(process.env.PORT, () => {

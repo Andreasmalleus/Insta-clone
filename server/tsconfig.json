@@ -3,6 +3,7 @@
       "module": "commonjs",
       "outDir": "./dist",
       "target": "ES6",
+      "lib": ["es2018", "esnext.asynciterable"],
       "strictNullChecks": true,
       "strictFunctionTypes": true,
       "removeComments": true,
