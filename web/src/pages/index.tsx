@@ -1,8 +1,12 @@
-
+import React from "react";
+import { NavBar } from "../components/NavBar";
 
 const Index = () => {
   return (
-    <div>hello</div>
+    <>
+      <NavBar />
+      <div>hello</div>
+    </>
   )
 };
 
