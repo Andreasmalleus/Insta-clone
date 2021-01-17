@@ -15,7 +15,6 @@ export class Comment extends BaseEntity{
     @Column()
     text! : string;
 
-    @Field(() => Post)
     @ManyToOne(() => Post, post => post.comments, {
         onDelete : 'CASCADE'
     })
@@ -25,7 +24,6 @@ export class Comment extends BaseEntity{
     @PrimaryColumn()
     postId : number;
 
-    @Field(() => User)
     @ManyToOne(() => User, user => user.comments)
     user : User;
 

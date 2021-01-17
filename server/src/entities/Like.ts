@@ -7,7 +7,6 @@ import { User } from "./User";
 @Entity()
 export class Like extends BaseEntity{
 
-    @Field(() => User)
     @ManyToOne(() => User, user => user.likes)
     user : User;
 
@@ -15,7 +14,6 @@ export class Like extends BaseEntity{
     @PrimaryColumn()
     userId : number;
 
-    @Field(() => Post)
     @ManyToOne(() => Post, post => post.likes, {
         onDelete : 'CASCADE'
     })

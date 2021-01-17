@@ -9,6 +9,7 @@ import { Comment } from "./entities/Comment";
 import { ApolloServer } from "apollo-server-express";
 import { buildSchema } from "type-graphql";
 import { UserResolver } from "./resolvers/user";
+import { PostResolver } from "./resolvers/post";
 
 const main = async () => {
     await createConnection({
@@ -22,7 +23,7 @@ const main = async () => {
 
     const apolloServer = new ApolloServer({
         schema : await buildSchema({
-            resolvers : [UserResolver],
+            resolvers : [UserResolver, PostResolver],
             validate : false  
         }),
     })

@@ -30,7 +30,7 @@ export class Post extends BaseEntity{
 
     @Field()
     @Column()
-    creatorId: number
+    creatorId!: number
 
     @Field(() => Like)
     @OneToMany(() => Like, like => like.postId)
