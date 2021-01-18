@@ -41,13 +41,9 @@ export class PostResolver{
                 'email' , u.email,
                 'createdAt', u."createdAt",
                 'updatedAt', u."updatedAt"
-            ) creator,
-            json_build_object(
-                'text' , c.text
-            ) comments
+            ) creator
             from public.post p
             inner join public.user u on u.id = p."creatorId"
-            inner join public.comment c on c."postId" = p."creatorId"
             order by p."createdAt" desc
         `)
         if(!posts){

@@ -10,6 +10,7 @@ import { ApolloServer } from "apollo-server-express";
 import { buildSchema } from "type-graphql";
 import { UserResolver } from "./resolvers/user";
 import { PostResolver } from "./resolvers/post";
+import cors from "cors";
 
 const main = async () => {
     await createConnection({
@@ -21,6 +22,11 @@ const main = async () => {
 
     const app = express();
 
+    app.use(cors({
+        origin : "http://localhost:3000",
+        credentials : true
+    }))
+
     const apolloServer = new ApolloServer({
         schema : await buildSchema({
             resolvers : [UserResolver, PostResolver],
@@ -29,7 +35,8 @@ const main = async () => {
     })
 
     apolloServer.applyMiddleware({
-        app
+        app,
+        cors : false
     })
 
     app.listen(process.env.PORT, () => {
