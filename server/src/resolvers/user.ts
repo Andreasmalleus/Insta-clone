@@ -1,9 +1,10 @@
-import { Arg, Field, Mutation, ObjectType, Query, Resolver } from "type-graphql";
+import { Arg, Ctx, Field, Mutation, ObjectType, Query, Resolver } from "type-graphql";
 import { getConnection } from "typeorm";
 import { User } from "../entities/User";
 import { validateRegister } from "../utils/validateRegister";
 import { RegisterInput } from "./RegisterInput";
 import argon from "argon2";
+import { MyContext } from "../types";
 
 @ObjectType()
 class FieldError{
@@ -26,16 +27,23 @@ class UserResponse{
 @Resolver(User)
 export class UserResolver{
 
-    @Query(() => User)
+    @Query(() => User, {nullable : true})
     async me(
-        @Arg("id") id : number
-    ){
-        return await User.findOne(id)
+        @Ctx() {req} : MyContext
+    ) : Promise<User | null> {        
+        console.log(req.session.userId);
+        
+        const user = await User.findOne({where : {id : req.session.userId}})
+        if(!user){
+            return null;
+        }
+        return user;
     }
 
     @Mutation(() => UserResponse)
     async register(
         @Arg("options") options : RegisterInput,
+        @Ctx() {req} : MyContext
     ) : Promise<UserResponse>{     
         const error = validateRegister(options);
 
@@ -67,7 +75,10 @@ export class UserResolver{
                 }
                 
             }             
-        }            
+        }          
+        
+        req.session.userId = user.id        
+
         return {user};
     }
 
@@ -75,6 +86,7 @@ export class UserResolver{
     async login(
         @Arg("usernameOrEmail") usernameOrEmail : string,
         @Arg("password") password : string,
+        @Ctx() {req} : MyContext
     ) : Promise<UserResponse>{     
 
         let isEmail = false;
@@ -109,6 +121,10 @@ export class UserResolver{
                 }
             }
         }
+
+        req.session.userId = user.id;
+
+        console.log(req.session.userId);
 
         return {user};
     }
