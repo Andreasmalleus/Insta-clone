@@ -5,6 +5,7 @@ import { InputField } from '../components/InputField';
 import NextLink from "next/link";
 import { gql, useMutation } from '@apollo/client';
 import { useRouter } from "next/router";
+import { checkIfFieldsAreEmpty } from '../utils/checkIfFieldsAreEmpty';
 
 interface LoginProps {
 
@@ -52,12 +53,20 @@ const Login: React.FC<LoginProps> = ({}) => {
                         }
                     }}
                 >
-                    {({ isSubmitting }) => (
+                    {({ isSubmitting, values }) => (
                         <Form>
                             <Flex direction="column">
                                 <InputField placeholder="Username or email" name="usernameOrEmail"/>
                                 <InputField placeholder="Password" name="password" type="password"/>
-                                <Button type="submit" colorScheme="teal" isLoading={isSubmitting} mb={2} mx={4}>Submit</Button>
+                                <Button 
+                                    type="submit" 
+                                    colorScheme="teal" 
+                                    isLoading={isSubmitting} 
+                                    mx={4}
+                                    isDisabled={checkIfFieldsAreEmpty(values)}
+                                >
+                                    Submit
+                                </Button>
                             </Flex>
                         </Form>
                     )}
@@ -67,7 +76,7 @@ const Login: React.FC<LoginProps> = ({}) => {
                 </Box>
             </Box>
             <Box bg="white" w="350px" h="75px" borderWidth="1px" mt={4} d="flex" justifyContent="center" alignItems="center">
-                <Flex>
+                <Flex fontSize="15px">
                     Dont have an account? 
                     <NextLink href="/register">
                         <Link ml={1}>Sign up</Link>

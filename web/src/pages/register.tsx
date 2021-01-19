@@ -5,6 +5,8 @@ import { InputField } from '../components/InputField';
 import NextLink from "next/link";
 import { useRouter } from 'next/router';
 import { gql, useMutation } from '@apollo/client';
+import { validateRegister } from '../utils/validateRegister';
+import { checkIfFieldsAreEmpty } from '../utils/checkIfFieldsAreEmpty';
 
 interface LoginProps {
 
@@ -43,27 +45,41 @@ const Login: React.FC<LoginProps> = ({}) => {
                         password : ''
                     }}
                     onSubmit={async (values, {setErrors}) => {
-                        const response = await register({variables : {
-                            options : values
-                        }})
-                        const error = response.data.register.error;
-                        if(!error){
-                            router.push('/');
-                        }else{
-                            setErrors({
+                        const validationErrors = validateRegister(values)
+                        if(!validationErrors){
+                            const response = await register({variables : {
+                                options : values
+                            }})
+                            const error = response.data.register.error;
+                            if(!error){
+                                return router.push('/');
+                            }
+                            return setErrors({
                                 [error.field] : error.message
                             })
-                        }
+                        }                           
+                        return setErrors({
+                            [validationErrors.error.field] : [validationErrors.error.message]
+                        })
+                        
                     }}
                 >
-                    {({ isSubmitting }) => (
+                    {({ isSubmitting,values }) => (
                         <Form>
                             <Flex direction="column">
                                 <InputField placeholder="Email" name="email"/>
                                 <InputField placeholder="Full Name" name="fullName"/>
                                 <InputField placeholder="Username" name="username"/>
                                 <InputField placeholder="Password" name="password" type="password"/>
-                                <Button type="submit" colorScheme="teal" isLoading={isSubmitting} mx={4} isDisabled={false}>Submit</Button>
+                                <Button 
+                                    type="submit" 
+                                    colorScheme="teal" 
+                                    isLoading={isSubmitting} 
+                                    mx={4} 
+                                    isDisabled={checkIfFieldsAreEmpty(values)}
+                                >
+                                    Submit
+                                </Button>
                             </Flex>
                         </Form>
                     )}
@@ -75,7 +91,7 @@ const Login: React.FC<LoginProps> = ({}) => {
                 </Box>
             </Box>
             <Box bg="white" w="350px" h="75px" borderWidth="1px" mt={4} d="flex" justifyContent="center" alignItems="center">
-                <Flex>
+                <Flex fontSize="15px">
                     Have an account? 
                     <NextLink href="/login">
                         <Link ml={1}>Log in</Link>
