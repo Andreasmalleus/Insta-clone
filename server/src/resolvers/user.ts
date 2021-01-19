@@ -66,13 +66,30 @@ export class UserResolver{
                 .execute();            
             user = result.raw[0];
         }catch(e){
-            return {
-                error : {
-                    field : "password",
-                    message : e,
+            console.log(e);
+            if(e.code == '23505'){
+                if(e.detail.includes("username")){
+                    return {
+                        error : {
+                            field : "username",
+                            message : "User with that username already exists",
+                        } 
+                    } 
+                }else if(e.detail.includes("email")){
+                    return {
+                        error : {
+                            field : "email",
+                            message : "User with that email already exists",
+                        } 
+                    } 
                 }
-                
-            }             
+                return {
+                    error : {
+                        field : "password",
+                        message : "Unexpected error",
+                    } 
+                } 
+            }
         }          
         
         req.session.userId = user.id        
