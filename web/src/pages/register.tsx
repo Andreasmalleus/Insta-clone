@@ -3,12 +3,32 @@ import { Form, Formik } from 'formik';
 import React from 'react'
 import { InputField } from '../components/InputField';
 import NextLink from "next/link";
+import { useRouter } from 'next/router';
+import { gql, useMutation } from '@apollo/client';
 
 interface LoginProps {
 
 }
 
 const Login: React.FC<LoginProps> = ({}) => {
+
+    const [register] = useMutation(gql`
+        mutation Register($options : RegisterInput!){
+            register(options : $options){
+                user{
+                    id,
+                    username,
+                }
+                error{
+                    field,
+                    message
+                }
+            }
+        }
+    `)
+
+    const router = useRouter();
+
     return (
         <Flex bg="#FAFAFA" h="100%" w="100%" justify="center" align="center" direction="column">
             <Box bg="white" width="350px" borderWidth="1px">
@@ -22,8 +42,18 @@ const Login: React.FC<LoginProps> = ({}) => {
                         username : '',
                         password : ''
                     }}
-                    onSubmit={(values, {setErrors}) => {
-                        console.log({ values });
+                    onSubmit={async (values, {setErrors}) => {
+                        const response = await register({variables : {
+                            options : values
+                        }})
+                        const error = response.data.register.error;
+                        if(!error){
+                            router.push('/');
+                        }else{
+                            setErrors({
+                                [error.field] : error.message
+                            })
+                        }
                     }}
                 >
                     {({ isSubmitting }) => (
@@ -33,7 +63,7 @@ const Login: React.FC<LoginProps> = ({}) => {
                                 <InputField placeholder="Full Name" name="fullName"/>
                                 <InputField placeholder="Username" name="username"/>
                                 <InputField placeholder="Password" name="password" type="password"/>
-                                <Button type="submit" colorScheme="teal" isLoading={isSubmitting} mx={4}>Submit</Button>
+                                <Button type="submit" colorScheme="teal" isLoading={isSubmitting} mx={4} isDisabled={false}>Submit</Button>
                             </Flex>
                         </Form>
                     )}

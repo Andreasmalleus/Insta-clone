@@ -68,7 +68,7 @@ export class UserResolver{
         }catch(e){
             return {
                 error : {
-                    field : "usernameOrEmail",
+                    field : "username",
                     message : e,
                 }
                 
