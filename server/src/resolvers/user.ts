@@ -30,9 +30,7 @@ export class UserResolver{
     @Query(() => User, {nullable : true})
     async me(
         @Ctx() {req} : MyContext
-    ) : Promise<User | null> {        
-        console.log(req.session.userId);
-        
+    ) : Promise<User | null> {                
         const user = await User.findOne({where : {id : req.session.userId}})
         if(!user){
             return null;
@@ -116,15 +114,13 @@ export class UserResolver{
         if(!valid){
             return {
                 error : {
-                    field : 'usernameOrEmail',
+                    field : 'password',
                     message : 'password is incorrect' 
                 }
             }
         }
 
         req.session.userId = user.id;
-
-        console.log(req.session.userId);
 
         return {user};
     }

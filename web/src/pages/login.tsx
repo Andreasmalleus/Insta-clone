@@ -3,12 +3,32 @@ import { Form, Formik } from 'formik';
 import React from 'react'
 import { InputField } from '../components/InputField';
 import NextLink from "next/link";
+import { gql, useMutation } from '@apollo/client';
+import { useRouter } from "next/router";
 
 interface LoginProps {
 
 }
 
 const Login: React.FC<LoginProps> = ({}) => {
+
+    const [login] = useMutation(gql`
+        mutation Login($usernameOrEmail: String!, $password: String!){
+            login(usernameOrEmail:$usernameOrEmail, password : $password){
+                user{
+                    id,
+                    username
+                }
+                error{
+                    field,
+                    message
+                }
+            }
+        }
+    `)
+
+    const router = useRouter();
+
     return (
         <Flex bg="#FAFAFA" h="100%" w="100%" justify="center" align="center" direction="column">
             <Box bg="white" width="350px" borderWidth="1px">
@@ -17,17 +37,25 @@ const Login: React.FC<LoginProps> = ({}) => {
                 </Box>
                 <Formik
                     initialValues={{
-                        emailOrUsername : '',
+                        usernameOrEmail : '',
                         password : ''
                     }}
-                    onSubmit={(values, {setErrors}) => {
-                        console.log({ values });
+                    onSubmit={ async (values, {setErrors}) => {
+                        const response = await login({variables : values})
+                        const error = response.data.login.error;
+                        if(!error){
+                            router.push('/');
+                        }else{
+                            setErrors({
+                                [error.field] : error.message
+                            })
+                        }
                     }}
                 >
                     {({ isSubmitting }) => (
                         <Form>
                             <Flex direction="column">
-                                <InputField placeholder="Email or Username" name="emailOrUsername"/>
+                                <InputField placeholder="Username or email" name="usernameOrEmail"/>
                                 <InputField placeholder="Password" name="password" type="password"/>
                                 <Button type="submit" colorScheme="teal" isLoading={isSubmitting} mb={2} mx={4}>Submit</Button>
                             </Flex>
