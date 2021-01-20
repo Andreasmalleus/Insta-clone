@@ -1,6 +1,8 @@
 import { gql, useQuery } from '@apollo/client';
-import { Box, Flex } from '@chakra-ui/react';
+import { SearchIcon } from '@chakra-ui/icons';
+import { Box, Flex, Input, InputGroup, InputLeftElement, Link } from '@chakra-ui/react';
 import React from 'react'
+import NextLink from "next/link";
 
 interface NavBarProps {
 
@@ -18,10 +20,26 @@ export const NavBar: React.FC<NavBarProps> = ({}) => {
     `)
 
     return (
-        <Flex w="100%" bg="whitesmoke" h={50} position="sticky" borderWidth="1px" borderColor="black">
-            <Flex maxW={800} justifyContent="center" align="center">
+        <Flex w="100%" bg="whitesmoke" h={50} position="sticky" borderWidth="1px" borderColor="black" justify="center">
+            <Flex w="100%" maxW="800px" justify="space-between" align="center">
                 <Box m={4}>
-                    Instaclone
+                    <NextLink href="/">
+                        ɪɴꜱᴛᴀᴄʟᴏɴᴇ
+                    </NextLink>
+                </Box>
+                <Box m={4}>
+                <Box spacing={4}>
+                    <InputGroup size="xs">
+                        <InputLeftElement
+                            pointerEvents="none"
+                            children={<SearchIcon color="gray.300" />}
+                        />
+                        <Input  
+                            type="text"
+                            placeholder="Search"
+                        />
+                    </InputGroup>
+                </Box>
                 </Box>
                 <Box m={4}>
                     {data?.me.username}
