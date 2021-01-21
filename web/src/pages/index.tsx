@@ -3,6 +3,7 @@ import React from "react";
 import { NavBar } from "../components/NavBar";
 import { Wrapper } from "../components/Wrapper";
 import { StoryList } from "../components/Story/StoryList";
+import { SuggestionList } from "../components/Suggestion/SuggestionList";
 
 const Index = () => {
 
@@ -18,7 +19,7 @@ const Index = () => {
           </Flex>
           <Flex direction="column" flexShrink={1} w="100%" maxW="300px">
             User
-            Suggestions
+            <SuggestionList />
           </Flex>
         </Wrapper>
     </Flex>
