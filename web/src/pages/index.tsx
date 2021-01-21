@@ -5,6 +5,7 @@ import { Wrapper } from "../components/Wrapper";
 import { StoryList } from "../components/Story/StoryList";
 import { SuggestionList } from "../components/Suggestion/SuggestionList";
 import { User } from "../components/User";
+import { MediaList } from "../components/Media/MediaList";
 
 const Index = () => {
 
@@ -15,7 +16,7 @@ const Index = () => {
           <Flex direction="column" flexGrow={3} >
             <Box mr={6}>
               <StoryList/>
-              Medias
+              <MediaList />
             </Box>
           </Flex>
           <Flex direction="column" flexShrink={1} w="100%" maxW="300px">
