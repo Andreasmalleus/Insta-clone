@@ -1,13 +1,14 @@
 import { Box, Flex } from "@chakra-ui/react";
 import React from "react";
 import { NavBar } from "../components/NavBar";
+import { Wrapper } from "../components/Wrapper";
 
 const Index = () => {
 
   return (
     <Flex direction="column" alignItems="center" bg="whitesmoke">
       <NavBar />
-        <Flex w="100%" maxW={"950px"} mt={6}>
+        <Wrapper variant="regular">
           <Flex direction="column" flexGrow={3} >
             <Box mr={6}>
               Stories
@@ -18,7 +19,7 @@ const Index = () => {
             User
             Suggestions
           </Flex>
-        </Flex>
+        </Wrapper>
     </Flex>
   )
 };
