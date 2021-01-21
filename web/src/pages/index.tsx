@@ -2,6 +2,7 @@ import { Box, Flex } from "@chakra-ui/react";
 import React from "react";
 import { NavBar } from "../components/NavBar";
 import { Wrapper } from "../components/Wrapper";
+import { StoryList } from "../components/Story/StoryList";
 
 const Index = () => {
 
@@ -11,7 +12,7 @@ const Index = () => {
         <Wrapper variant="regular">
           <Flex direction="column" flexGrow={3} >
             <Box mr={6}>
-              Stories
+              <StoryList/>
               Medias
             </Box>
           </Flex>
