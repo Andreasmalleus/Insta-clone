@@ -1,13 +1,13 @@
 import { gql, useQuery } from '@apollo/client';
 import { SearchIcon } from '@chakra-ui/icons';
-import { Box, Flex, IconButton, Input, InputGroup, InputLeftElement, MenuItem, Icon, Divider, useColorMode } from '@chakra-ui/react';
+import { Box, Flex, IconButton, Input, InputGroup, InputLeftElement, useColorMode } from '@chakra-ui/react';
 import React, { useEffect } from 'react'
 import NextLink from "next/link";
-import { AiFillHome, AiOutlineCompass, AiOutlineHeart } from 'react-icons/ai';
-import { FiSend, FiUser, FiSettings } from 'react-icons/fi';
-import { HiSwitchHorizontal } from 'react-icons/hi';
-import { DropDown } from './Dropdown';
+import { AiFillHome, AiOutlineCompass, AiOutlineHome, AiFillCompass } from 'react-icons/ai';
+import { FiSend} from 'react-icons/fi';
 import { useRouter } from 'next/router';
+import { UserDropdown } from './Dropdown/UserDropdown';
+import { ActivityDropdown } from './Dropdown/ActivityDropdown';
 
 interface NavBarProps {
 
@@ -29,23 +29,6 @@ export const NavBar: React.FC<NavBarProps> = ({}) => {
         }
         }
     `)
-
-    const mockData = [
-        {
-            username : "jaanus",
-            createdAt : "4w",
-            id: 1
-        },
-        {
-            username : "mzhussky",
-            createdAt : "6w",
-            id: 2
-        },{
-            username : "rutsen",
-            createdAt : "9w",
-            id: 3
-        }
-    ]
 
     const router = useRouter();    
     
@@ -72,47 +55,24 @@ export const NavBar: React.FC<NavBarProps> = ({}) => {
                 </Box>
                 </Box>
                 <Flex my={4} alignItems="center">
-                    <IconButton as={AiFillHome as any} w="25px" h="25px" mr={4} aria-label="home" onClick={() => console.log("home")} bg="white"/>
-                    <IconButton as={FiSend as any} w="25px" h="25px" mr={4} aria-label="messages" onClick={() => console.log("messages")} bg="white"/>
-                    <IconButton as={AiOutlineCompass as any} w="25px" h="25px" mr={4} aria-label="explore" onClick={() => console.log("explore")} bg="white"/>
-                    <DropDown icon={AiOutlineHeart} margin={4}>
-                        {mockData.map((user, index) => (
-                            <React.Fragment key={user.id}>
-                                <MenuItem onClick={() => {
-                                    router.push("/login")
-                                }}>
-                                    <Flex justify="space-between" alignItems="center" w="100%">
-                                        <Flex alignItems="center">
-                                            <Icon as={FiUser as any} w="20px" h="20px" mr={2}/>
-                                            <Flex direction="column">
-                                                <Box fontWeight="bold">{user.username}</Box>
-                                                <Box>started following you. {user.createdAt}</Box>
-                                            </Flex>
-                                        </Flex>
-                                    </Flex>
-                                </MenuItem>
-                                {index != mockData.length - 1 ? <Divider/> : null}
-                            </React.Fragment>
-                        ))}
-                    </DropDown>
-                    <DropDown icon={FiUser}>
-                        <MenuItem>
-                            <Icon as={FiUser as any} w="20px" h="20px" mr={2}/>
-                            Profile
-                        </MenuItem>
-                        <MenuItem>
-                            <Icon as={FiSettings as any} w="20px" h="20px" mr={2}/>
-                            Settings
-                        </MenuItem>
-                        <MenuItem>
-                            <Icon as={HiSwitchHorizontal as any} w="20px" h="20px" mr={2}/>
-                            Switch accounts
-                        </MenuItem>
-                        <Divider></Divider>
-                        <MenuItem key="log-out">
-                            Log out
-                        </MenuItem>
-                    </DropDown>
+                    <IconButton 
+                        as={router.pathname == '/' ? AiFillHome : AiOutlineHome} 
+                        w="25px" h="25px" mr={2} 
+                        aria-label="home" 
+                        onClick={() => router.push('/')} 
+                        bg="none"
+                    />
+                    <IconButton as={FiSend as any} w="25px" h="25px" mr={2}  aria-label="messages" onClick={() => console.log("messages")} bg="none"/>
+                    <IconButton 
+                        as={router.pathname == '/explore' ? AiFillCompass : AiOutlineCompass} 
+                        w="25px" h="25px" 
+                        mr={2} 
+                        aria-label="explore" 
+                        onClick={() => router.push("/explore")} 
+                        bg="none"
+                    />
+                    <ActivityDropdown />
+                    <UserDropdown username={data?.me?.username}/>
                 </Flex>
             </Flex>
         </Flex>
