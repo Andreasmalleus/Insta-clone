@@ -14,6 +14,7 @@ import session from "express-session";
 import cors from "cors";
 import connectRedis from "connect-redis";
 import Redis from "ioredis";
+import { FileResolver } from "./resolvers/file";
 
 const main = async () => {
     await createConnection({
@@ -54,7 +55,7 @@ const main = async () => {
 
     const apolloServer = new ApolloServer({
         schema : await buildSchema({
-            resolvers : [UserResolver, PostResolver],
+            resolvers : [UserResolver, PostResolver, FileResolver],
             validate : false  
         }),
         context : ({req,res}) => ({req,res, redis})

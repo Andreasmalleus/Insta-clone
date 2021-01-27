@@ -1,20 +1,21 @@
-import { Arg, Field, InputType, Mutation, Query, Resolver } from "type-graphql";
+import { Arg, Field, InputType, Mutation, Query, Resolver, Ctx, UseMiddleware } from "type-graphql";
 import { getConnection } from "typeorm";
 import { Comment } from "../entities/Comment";
 import { Like } from "../entities/Like";
 import { Post } from "../entities/Post";
+import { FileUpload } from "graphql-upload";
+import { GraphQLUpload } from "apollo-server-express"
+import { MyContext } from "../types";
+import AWSApi from "../utils/awsApi";
+import { isAuth } from "../middlewares/isAuth";
 
-@InputType()
+/*@InputType()
 class CreatePostInput{
     @Field()
     description! : string
     @Field()
-    type! : string
-    @Field()
-    url! : string
-    @Field()
     creatorId! : number
-}
+}*/
 
 @InputType()
 class CommentInput{
@@ -25,6 +26,8 @@ class CommentInput{
     @Field()
     text! : string
 }
+
+const api = new AWSApi()
 
 @Resolver()
 export class PostResolver{
@@ -64,16 +67,31 @@ export class PostResolver{
     }
 
     @Mutation(() => Post, {nullable : true})
+    @UseMiddleware(isAuth)
     async createPost(
-        @Arg("options") options : CreatePostInput 
+        @Arg("file", () => GraphQLUpload!) file : FileUpload,
+        @Arg("description") description : string,
+        @Ctx() {req} : MyContext
     ) : Promise<Post | null>{
+        const {userId} = req.session;
+
+        const {filename, createReadStream, mimetype} = await file;
+        const key = `posts/${userId}/${filename}`
+
+        const {url} = await api.upload(key, createReadStream);
+
         let post;
         try{
             const result = await getConnection()
             .createQueryBuilder()
             .insert()
             .into(Post)
-            .values(options)
+            .values({
+                creatorId : userId,
+                description,
+                url,
+                type : mimetype.split("/")[0]
+            })
             .returning('*')
             .execute();
             post = result.raw[0]

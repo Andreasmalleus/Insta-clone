@@ -8,6 +8,7 @@ import { FiSend} from 'react-icons/fi';
 import { useRouter } from 'next/router';
 import { UserDropdown } from './Dropdown/UserDropdown';
 import { ActivityDropdown } from './Dropdown/ActivityDropdown';
+import { IoCreateOutline, IoCreate } from 'react-icons/io5';
 
 interface NavBarProps {
 
@@ -69,6 +70,14 @@ export const NavBar: React.FC<NavBarProps> = ({}) => {
                         mr={2} 
                         aria-label="explore" 
                         onClick={() => router.push("/explore")} 
+                        bg="none"
+                    />
+                    <IconButton 
+                        as={router.pathname == '/create' ? IoCreate : IoCreateOutline} 
+                        w="25px" h="25px" 
+                        mr={2} 
+                        aria-label="create" 
+                        onClick={() => router.push("/create")} 
                         bg="none"
                     />
                     <ActivityDropdown />
