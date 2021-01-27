@@ -1,4 +1,4 @@
-import { Box, Divider, Flex, IconButton, Input, InputGroup, InputRightElement, Link } from '@chakra-ui/react';
+import { Box, Divider, Flex, IconButton, Input, InputGroup, InputRightElement, Link, Image } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import React from 'react';
 import { AiOutlineHeart } from 'react-icons/ai';
@@ -25,6 +25,7 @@ interface PostProps {
     id : number;
     description : string;
     type : string;
+    url : string;
     creator : creator;
     likes : number;
     comments : comment[];
@@ -69,8 +70,8 @@ export const Post: React.FC<PostProps> = ({...props}) => {
                     <IconButton as={BsThreeDots as any} w="20px" h="20px" bg="none" cursor="pointer" aria-label="More options" _hover={{bg : "white"}}/>
                 </Flex>
             </Box>
-            <Box className="content" height="700px" bg="tomato" width="100%" d="flex" justifyContent="center" alignItems="center">
-                Image
+            <Box className="content" h="700px" bg="white" width="100%" d="flex" justifyContent="center" alignItems="center">
+                <Image src={props.url}/>
             </Box>
             <Box className="footer">
                 <Box className="buttons" mx={4}>
@@ -114,15 +115,16 @@ export const Post: React.FC<PostProps> = ({...props}) => {
                         </Box>
                     </Flex>
                 </Box>
-                <Box className="comments" fontSize="15px" mx={4}>
-                    {props.comments.length > 2 
+                {props.comments ?
+                    <Box className="comments" fontSize="15px" mx={4}>
+                    {props?.comments.length > 2 
                         ?
                         <Link color="grey">
                         View all 66 comments
                         </Link>
                         : null
                     }
-                    {props.comments.slice(0,2).map((comment,i) => (
+                    {props?.comments.slice(0,2).map((comment,i) => (
                         <Flex className="comment" key={i} justify="space-between" alignItems="center">
                             <Box>
                                 <Link as="span" fontWeight="bold" mr={1} cursor="pointer" onClick={() => pushToUserPage(comment.creator.username)}>
@@ -135,7 +137,9 @@ export const Post: React.FC<PostProps> = ({...props}) => {
                             <IconButton as={AiOutlineHeart} w="15px" h="15px" mr={2} bg="none" cursor="pointer" aria-label="Like post"/>
                         </Flex>
                     ))}
-                </Box>
+                    </Box>
+                : null       
+                }   
                 <Box className="post-time" my={2} mx={4} fontSize="13px" color="grey" cursor="pointer">
                     {props.createdAt}
                 </Box>

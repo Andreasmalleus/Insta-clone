@@ -5,10 +5,28 @@ import { Wrapper } from "../components/Wrapper";
 import { User } from "../components/User";
 import { Post } from "../components/Post";
 import { Story } from "../components/Story";
-import { users, posts } from "../mockData";
+import { users } from "../mockData";
 import { Suggestion } from "../components/Suggestion";
+import { gql, useQuery } from "@apollo/client";
 
 const Index = () => {
+
+  const { loading, error, data } = useQuery(gql`
+    query getPosts{
+      posts{
+        id,
+        description,
+        url,
+        type,
+        creator{
+          id
+          username,
+        }
+      }
+    }
+  `);
+  
+
   return (
     <Flex direction="column" alignItems="center" bg="whitesmoke">
       <NavBar />
@@ -22,13 +40,18 @@ const Index = () => {
                     ))}
                 </Flex>
             </Box>
+              {
+              loading ?
+                <div>Loading</div>
+              :
               <Box className="posts" maxW="650px">
                 <Flex direction="column">
-                    {posts.map(post => (
+                    {data.posts.map(post => (
                       <Post key={post.id} {...post}></Post>
                     ))}
                 </Flex>
-              </Box>
+              </Box>  
+            }
             </Box>
           </Flex>
           <Flex direction="column" flexShrink={1} w="100%" maxW="300px">
