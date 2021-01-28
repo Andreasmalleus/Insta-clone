@@ -1,4 +1,4 @@
-import { Arg, Field, InputType, Mutation, Query, Resolver, Ctx, UseMiddleware } from "type-graphql";
+import { Arg, Field, InputType, Mutation, Query, Resolver, Ctx, UseMiddleware, Int } from "type-graphql";
 import { getConnection } from "typeorm";
 import { Comment } from "../entities/Comment";
 import { Like } from "../entities/Like";
@@ -57,7 +57,7 @@ export class PostResolver{
     
     @Query(() => Post, {nullable : true})
     async post(
-        @Arg("id") id : number
+        @Arg("id", () => Int!) id : number
     ) : Promise<Post | null>{
         const post = await Post.findOne(id, {relations : ['creator']})
         if(!post){
