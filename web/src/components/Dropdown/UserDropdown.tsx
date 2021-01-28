@@ -4,6 +4,7 @@ import { FiUser, FiSettings } from 'react-icons/fi';
 import { MenuItem, Icon, Divider } from '@chakra-ui/react';
 import { HiSwitchHorizontal } from 'react-icons/hi';
 import { useRouter } from 'next/router';
+import { useMutation, gql, useApolloClient } from '@apollo/client';
 
 interface UserDropdownProps {
     username : string;
@@ -12,6 +13,14 @@ interface UserDropdownProps {
 export const UserDropdown: React.FC<UserDropdownProps> = ({username}) => {
 
     const router = useRouter();
+
+    const [logout] = useMutation(gql`
+        mutation Logout{
+            logout
+        }
+    `)  
+
+    const apollo = useApolloClient();
 
     return (
         <DropDown icon={FiUser}>
@@ -35,7 +44,11 @@ export const UserDropdown: React.FC<UserDropdownProps> = ({username}) => {
                 Switch accounts
             </MenuItem>
             <Divider></Divider>
-            <MenuItem key="log-out">
+            <MenuItem key="log-out" onClick={async () => {
+                await logout();
+                await apollo.cache.reset()
+                router.push('/login');
+            }}>
                 Log out
             </MenuItem>
         </DropDown>

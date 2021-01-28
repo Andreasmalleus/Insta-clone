@@ -1,4 +1,4 @@
-import { Box, Flex } from "@chakra-ui/react";
+import { Box, Flex, Spinner } from "@chakra-ui/react";
 import React from "react";
 import { NavBar } from "../components/NavBar";
 import { Wrapper } from "../components/Wrapper";
@@ -8,10 +8,12 @@ import { Story } from "../components/Story";
 import { users } from "../mockData";
 import { Suggestion } from "../components/Suggestion";
 import { gql, useQuery } from "@apollo/client";
+import Login from "./login";
+import { useRouter } from "next/router";
 
 const Index = () => {
 
-  const { loading, error, data } = useQuery(gql`
+  const { data : posts} = useQuery(gql`
     query getPosts{
       posts{
         id,
@@ -24,9 +26,17 @@ const Index = () => {
         }
       }
     }
-  `);
-  
+  `);  
 
+  const {data, loading, error} = useQuery(gql`
+    query Me{
+        me{
+            id,
+            username,
+        }
+    }
+  `)
+  
   return (
     <Flex direction="column" alignItems="center" bg="whitesmoke">
       <NavBar />
@@ -41,12 +51,12 @@ const Index = () => {
                 </Flex>
             </Box>
               {
-              loading ?
-                <div>Loading</div>
+              !posts ?
+                <div>No posts</div>
               :
               <Box className="posts" maxW="650px">
                 <Flex direction="column">
-                    {data.posts.map(post => (
+                    {posts.posts.map(post => (
                       <Post key={post.id} {...post}></Post>
                     ))}
                 </Flex>
@@ -55,7 +65,11 @@ const Index = () => {
             </Box>
           </Flex>
           <Flex direction="column" flexShrink={1} w="100%" maxW="300px">
-            <User/>
+            {
+              !data?.me ? 
+              <div>asdas</div>
+              :<User />
+            }
             <Box className="suggestions">
               <Flex justifyContent="space-between" alignItems="center" fontSize="13px" mt={6} mb={2}>
                 <Box color="grey">

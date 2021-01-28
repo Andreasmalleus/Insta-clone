@@ -24,12 +24,12 @@ export const NavBar: React.FC<NavBarProps> = ({}) => {
 
     const {data} = useQuery(gql`
         query Me{
-        me{
-            id,
-            username,
+            me{
+                id,
+                username,
+            }
         }
-        }
-    `)
+    `)    
 
     const router = useRouter();    
     
