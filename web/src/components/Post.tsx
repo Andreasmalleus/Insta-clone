@@ -70,8 +70,8 @@ export const Post: React.FC<PostProps> = ({...props}) => {
                     <IconButton as={BsThreeDots as any} w="20px" h="20px" bg="none" cursor="pointer" aria-label="More options" _hover={{bg : "white"}}/>
                 </Flex>
             </Box>
-            <Box className="content" h="700px" bg="white" width="100%" d="flex" justifyContent="center" alignItems="center">
-                <Image src={props.url}/>
+            <Box className="content" bg="white" width="100%" d="flex" justifyContent="center" alignItems="center">
+                <Image src={props.url} maxH="700px" />
             </Box>
             <Box className="footer">
                 <Box className="buttons" mx={4}>

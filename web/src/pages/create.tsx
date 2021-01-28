@@ -1,11 +1,11 @@
-import React, { ChangeEvent, useState } from 'react'
-import { Flex, Button, Box, Image, IconButton, Input } from '@chakra-ui/react';
+import React from 'react'
+import { Flex, Button, Box} from '@chakra-ui/react';
 import { NavBar } from '../components/NavBar';
 import { Wrapper } from '../components/Wrapper';
 import { Formik, Form } from 'formik';
 import { InputField } from '../components/InputField';
 import { useMutation, gql } from '@apollo/client';
-import { CloseIcon } from '@chakra-ui/icons';
+import { useRouter } from 'next/router';
 
 interface CreateProps {
 
@@ -22,6 +22,8 @@ const Create: React.FC<CreateProps> = ({}) => {
         }
     `) 
 
+    const router = useRouter();
+
     return (
         <Flex direction="column" alignItems="center" bg="whitesmoke" h="100%"> 
             <NavBar />
@@ -37,9 +39,18 @@ const Create: React.FC<CreateProps> = ({}) => {
                                 const result = await createPost({
                                     variables : {
                                         ...values
+                                    },
+                                    update : cache => {
+                                        console.log(cache);
+                                        cache.evict({
+                                            id : 'ROOT_QUERY',
+                                            fieldName : 'posts'
+                                        })
                                     }
                                 })
-                                console.log(result)
+                                if(result){
+                                    router.push('/');
+                                }
                             }}
                         >
                             {({ isSubmitting , setFieldValue}) => (
