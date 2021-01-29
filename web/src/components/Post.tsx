@@ -5,6 +5,7 @@ import { AiOutlineHeart } from 'react-icons/ai';
 import { BsThreeDots } from 'react-icons/bs';
 import { FiBookmark, FiSend, FiUser } from 'react-icons/fi';
 import { IoChatbubbleOutline } from 'react-icons/io5';
+import { pushToProfile } from '../utils/pushToProfile';
 
 
 type creator = {
@@ -37,21 +38,7 @@ export const Post: React.FC<PostProps> = ({...props}) => {
 
     const router = useRouter();
 
-    const pushToUserPage = (username) => {
-        router.push({
-            pathname : '/[username]',
-            query : {username}
-        })
-    }
-
-    const pushToPostPage = (id) => {
-        router.push({
-            pathname : '/post/[id]',
-            query : {id}
-        })
-    }
-
-    const creator = props.creator.username;
+    const {username} = props.creator;;
 
     return (
         <Box className="media" w="100%" border="1px" borderColor="lightgrey" borderRadius={4} my={6} mx={1} bg="white">
@@ -60,10 +47,10 @@ export const Post: React.FC<PostProps> = ({...props}) => {
                     <Box>
                         <Flex alignItems="center">
                             <Box>
-                                <IconButton as={FiUser as any} w="35px" h="35px" aria-label="Go to user page" bg="none" onClick={() => pushToUserPage(creator)} cursor="pointer"/>
+                                <IconButton as={FiUser as any} w="35px" h="35px" aria-label="Go to user page" bg="none" onClick={() => pushToProfile(router,username)} cursor="pointer"/>
                             </Box>
-                            <Link ml={2} fontWeight="bold" onClick={() => pushToUserPage(creator)}>
-                                {creator}
+                            <Link ml={2} fontWeight="bold" onClick={() => pushToProfile(router,username)}>
+                                {username}
                             </Link>
                         </Flex> 
                     </Box>
@@ -107,8 +94,8 @@ export const Post: React.FC<PostProps> = ({...props}) => {
                         {props.likes} likes
                     </Box>
                     <Flex>
-                        <Link className="creator" mr={1} fontWeight="bold" cursor="pointer" onClick={() => pushToUserPage(creator)}>
-                            {creator}
+                        <Link className="creator" mr={1} fontWeight="bold" cursor="pointer" onClick={() => pushToProfile(router, username)}>
+                            {username}
                         </Link>
                         <Box className="creator">
                             {props.description}
@@ -127,7 +114,7 @@ export const Post: React.FC<PostProps> = ({...props}) => {
                     {props?.comments.slice(0,2).map((comment,i) => (
                         <Flex className="comment" key={i} justify="space-between" alignItems="center">
                             <Box>
-                                <Link as="span" fontWeight="bold" mr={1} cursor="pointer" onClick={() => pushToUserPage(comment.creator.username)}>
+                                <Link as="span" fontWeight="bold" mr={1} cursor="pointer" onClick={() => pushToProfile(router,comment.creator.username)}>
                                     {comment.creator.username}
                                 </Link>
                                 <Box as="span">

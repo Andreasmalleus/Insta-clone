@@ -6,10 +6,10 @@ import { BsThreeDots } from 'react-icons/bs';
 import { AiOutlineHeart } from 'react-icons/ai';
 import { IoChatbubbleOutline,IoAddCircleOutline } from 'react-icons/io5';
 import { useRouter } from 'next/router';
-import { posts } from "../../mockData";
 import { useQuery, gql } from '@apollo/client';
 import { Layout } from '../../components/Layout';
 import { NextPage } from 'next';
+import { pushToProfile } from '../../utils/pushToProfile';
 
 
 const Post: NextPage<{postId: number}> = ({postId}) => {
@@ -23,7 +23,7 @@ const Post: NextPage<{postId: number}> = ({postId}) => {
                 description,
                 url,
                 type,
-                    creator{
+                creator{
                     id
                     username,
                 }
@@ -35,13 +35,6 @@ const Post: NextPage<{postId: number}> = ({postId}) => {
             id : postId
         }
     })
-
-    const pushToUserPage = () => {
-        router.push({
-            pathname : '/[username]',
-            query : {username : "username"}
-        })
-    }
 
     if(loading){
         return (
@@ -61,6 +54,8 @@ const Post: NextPage<{postId: number}> = ({postId}) => {
         )
     }
 
+    const {username} = data.post.creator;
+
     return (
         <Layout>
             <Wrapper variant="regular">
@@ -72,9 +67,13 @@ const Post: NextPage<{postId: number}> = ({postId}) => {
 
                         <Flex h="70px" justify="space-between" alignItems="center" className="user info" borderBottom="1px" borderColor="lightgrey">
                             <Flex alignItems="center" my={4} ml={1}>
-                                <IconButton as={FiUser as any} w="30px" h="30px" aria-label="user-image" bg="none" onClick={() => pushToUserPage()} cursor="pointer"/>
-                                <Link ml={2} fontWeight="bold" onClick={() => pushToUserPage()}>
-                                    {data.post.creator.username}
+                                <IconButton as={FiUser as any} w="30px" h="30px" aria-label="user-image" bg="none" onClick={() => {
+                                    pushToProfile(router, username)
+                                }} cursor="pointer"/>
+                                <Link ml={2} fontWeight="bold" onClick={() => {
+                                    pushToProfile(router, username)
+                                }}>
+                                    {username}
                                 </Link>
                             </Flex>
                             <IconButton as={BsThreeDots as any} w="20px" h="20px" mr={4} aria-label="Go to options" bg="none" cursor="pointer"/>
@@ -86,7 +85,7 @@ const Post: NextPage<{postId: number}> = ({postId}) => {
                                     <Icon as={FiUser} w="30px" h="30px" mr={2}/>
                                     <Flex direction="column" w="100%"> 
                                         <Box>
-                                            <Box as="span" fontWeight="bold" mr={2}>{data.post.creator.username}</Box>  
+                                            <Box as="span" fontWeight="bold" mr={2}>{username}</Box>  
                                             <Box as="span" fontSize="15px">{data.post.description}</Box>    
                                         </Box> 
                                         <Text mr={3} mt={3} color="grey" fontSize="13px">{data.post.createdAt}</Text>    

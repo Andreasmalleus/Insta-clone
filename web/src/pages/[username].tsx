@@ -7,11 +7,11 @@ import { FiUser, FiSettings } from "react-icons/fi";
 import { posts } from "../mockData";
 import { BsPersonCheckFill, BsThreeDots } from 'react-icons/bs';
 
-interface AccountProps{
+interface ProfileProps{
     
 }
 
-const Account : React.FC<AccountProps> = ({}) => {
+const Profile : React.FC<ProfileProps> = ({}) => {
 
     const router = useRouter();
     const { username, isMe } = router.query;
@@ -86,4 +86,4 @@ const Account : React.FC<AccountProps> = ({}) => {
     );
 }
 
-export default Account;
+export default Profile;

@@ -3,6 +3,7 @@ import { Box, Flex, Icon, IconButton, Link, Spinner } from '@chakra-ui/react';
 import { FiUser } from 'react-icons/fi';
 import { useRouter } from 'next/router';
 import { gql, useQuery, useMutation, useApolloClient } from '@apollo/client';
+import { pushToProfile } from '../utils/pushToProfile';
 
 interface UserProps {
 }
@@ -28,13 +29,6 @@ export const User: React.FC<UserProps> = ({}) => {
 
     const apollo = useApolloClient();
 
-    const pushToUserPage = () => {
-        router.push({
-            pathname : '/[username]',
-            query : {username : "username"}
-        })
-    }
-
     if(loading){
         return <Spinner></Spinner>
     }else if(error){
@@ -46,9 +40,9 @@ export const User: React.FC<UserProps> = ({}) => {
                 <Box mr={2}>
                     <Flex alignItems="center">
                         <Box>
-                            <Icon as={FiUser as any}w="55px" h="55px" mr={1} aria-label="user-image" bg="none" onClick={() => pushToUserPage()} cursor="pointer"/>
+                            <Icon as={FiUser as any}w="55px" h="55px" mr={1} aria-label="user-image" bg="none" onClick={() => pushToProfile(router, data.me.username)} cursor="pointer"/>
                         </Box>
-                        <Link mr={2} onClick={() => pushToUserPage()}>
+                        <Link mr={2} onClick={() => pushToProfile(router, data.me.username)}>
                             {data.me.username}
                         </Link>
                     </Flex>
