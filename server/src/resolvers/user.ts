@@ -1,10 +1,11 @@
-import { Arg, Ctx, Field, Mutation, ObjectType, Query, Resolver } from "type-graphql";
+import { Arg, Ctx, Field, Mutation, ObjectType, Query, Resolver, Int, Root, FieldResolver } from "type-graphql";
 import { getConnection } from "typeorm";
 import { User } from "../entities/User";
 import { validateRegister } from "../utils/validateRegister";
 import { RegisterInput } from "./RegisterInput";
 import argon from "argon2";
 import { MyContext } from "../types";
+import { Post } from "../entities/Post";
 
 @ObjectType()
 class FieldError{
@@ -157,5 +158,33 @@ export class UserResolver{
                 resolve(true);
             })
         })
+    }
+    
+    @Query(() => User)
+    async user(
+        @Arg("id", () => Int, {nullable : true}) id : number,
+        @Arg("username", {nullable : true}) username : string
+    ) : Promise<User | null>{
+        if(!id && !username){
+            return null;
+        }
+        const user = await User.findOne({where : id ? {id} : {username}})
+        if(!user){
+            return null
+        }
+        return user;
+    }
+
+    @FieldResolver(() => [Post])
+    async posts(
+        @Root() user : User,
+    ){
+        const posts = await Post.find({where : {
+            creatorId : user.id
+        }})
+        if(!posts){
+            return null;
+        }
+        return posts;
     }
 }

@@ -1,8 +1,8 @@
 import { NextRouter } from "next/router";
 
-export const pushToProfile = (router : NextRouter, username : string) => {
+export const pushToProfile = (router : NextRouter, id : number) => {
     router.push({
-        pathname : "/[username]",
-        query : {username}
+        pathname : "/profile/[id]",
+        query : {id}
     })
 }

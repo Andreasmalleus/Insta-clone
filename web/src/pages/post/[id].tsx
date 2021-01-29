@@ -54,7 +54,7 @@ const Post: NextPage<{postId: number}> = ({postId}) => {
         )
     }
 
-    const {username} = data.post.creator;
+    const {username, id} = data.post.creator;
 
     return (
         <Layout>
@@ -68,10 +68,10 @@ const Post: NextPage<{postId: number}> = ({postId}) => {
                         <Flex h="70px" justify="space-between" alignItems="center" className="user info" borderBottom="1px" borderColor="lightgrey">
                             <Flex alignItems="center" my={4} ml={1}>
                                 <IconButton as={FiUser as any} w="30px" h="30px" aria-label="user-image" bg="none" onClick={() => {
-                                    pushToProfile(router, username)
+                                    pushToProfile(router, id)
                                 }} cursor="pointer"/>
                                 <Link ml={2} fontWeight="bold" onClick={() => {
-                                    pushToProfile(router, username)
+                                    pushToProfile(router, id)
                                 }}>
                                     {username}
                                 </Link>

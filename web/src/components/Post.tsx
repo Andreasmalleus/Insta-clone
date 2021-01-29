@@ -38,7 +38,7 @@ export const Post: React.FC<PostProps> = ({...props}) => {
 
     const router = useRouter();
 
-    const {username} = props.creator;;
+    const {username, id} = props.creator;;
 
     return (
         <Box className="media" w="100%" border="1px" borderColor="lightgrey" borderRadius={4} my={6} mx={1} bg="white">
@@ -47,9 +47,9 @@ export const Post: React.FC<PostProps> = ({...props}) => {
                     <Box>
                         <Flex alignItems="center">
                             <Box>
-                                <IconButton as={FiUser as any} w="35px" h="35px" aria-label="Go to user page" bg="none" onClick={() => pushToProfile(router,username)} cursor="pointer"/>
+                                <IconButton as={FiUser as any} w="35px" h="35px" aria-label="Go to user page" bg="none" onClick={() => pushToProfile(router,id)} cursor="pointer"/>
                             </Box>
-                            <Link ml={2} fontWeight="bold" onClick={() => pushToProfile(router,username)}>
+                            <Link ml={2} fontWeight="bold" onClick={() => pushToProfile(router,id)}>
                                 {username}
                             </Link>
                         </Flex> 
@@ -94,7 +94,7 @@ export const Post: React.FC<PostProps> = ({...props}) => {
                         {props.likes} likes
                     </Box>
                     <Flex>
-                        <Link className="creator" mr={1} fontWeight="bold" cursor="pointer" onClick={() => pushToProfile(router, username)}>
+                        <Link className="creator" mr={1} fontWeight="bold" cursor="pointer" onClick={() => pushToProfile(router, id)}>
                             {username}
                         </Link>
                         <Box className="creator">
@@ -114,7 +114,7 @@ export const Post: React.FC<PostProps> = ({...props}) => {
                     {props?.comments.slice(0,2).map((comment,i) => (
                         <Flex className="comment" key={i} justify="space-between" alignItems="center">
                             <Box>
-                                <Link as="span" fontWeight="bold" mr={1} cursor="pointer" onClick={() => pushToProfile(router,comment.creator.username)}>
+                                <Link as="span" fontWeight="bold" mr={1} cursor="pointer" onClick={() => pushToProfile(router,comment.creator.id)}>
                                     {comment.creator.username}
                                 </Link>
                                 <Box as="span">

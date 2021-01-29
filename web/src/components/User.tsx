@@ -40,9 +40,9 @@ export const User: React.FC<UserProps> = ({}) => {
                 <Box mr={2}>
                     <Flex alignItems="center">
                         <Box>
-                            <Icon as={FiUser as any}w="55px" h="55px" mr={1} aria-label="user-image" bg="none" onClick={() => pushToProfile(router, data.me.username)} cursor="pointer"/>
+                            <Icon as={FiUser as any}w="55px" h="55px" mr={1} aria-label="user-image" bg="none" onClick={() => pushToProfile(router, data.me.id)} cursor="pointer"/>
                         </Box>
-                        <Link mr={2} onClick={() => pushToProfile(router, data.me.username)}>
+                        <Link mr={2} onClick={() => pushToProfile(router, data.me.id)}>
                             {data.me.username}
                         </Link>
                     </Flex>

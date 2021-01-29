@@ -1,11 +1,11 @@
 import React from 'react'
 import { useRouter } from 'next/router';
-import { NavBar } from '../components/NavBar';
-import { Flex, Icon, Box, Button, Divider, IconButton } from '@chakra-ui/react';
-import { Wrapper } from '../components/Wrapper';
+import { NavBar } from '../../components/NavBar';
+import { Flex, Icon, Box, Button, Divider, IconButton, Image } from '@chakra-ui/react';
+import { Wrapper } from '../../components/Wrapper';
 import { FiUser, FiSettings } from "react-icons/fi";
-import { posts } from "../mockData";
 import { BsPersonCheckFill, BsThreeDots } from 'react-icons/bs';
+import { useQuery, gql } from '@apollo/client';
 
 interface ProfileProps{
     
@@ -14,10 +14,33 @@ interface ProfileProps{
 const Profile : React.FC<ProfileProps> = ({}) => {
 
     const router = useRouter();
-    const { username, isMe } = router.query;
+    const { id } = router.query;
+
+    const {data, loading, error} = useQuery(gql`
+        query Query($id : Int!){
+            user(id : $id){
+                id,
+                username,
+                posts{
+                    id,
+                    description,
+                    url
+                }
+            }
+            me{
+                id
+            }
+        }
+    `,
+    {
+        variables : {
+            id : parseInt(id as string)
+        }
+    }
+    )
     
     return (
-        <Flex direction="column" alignItems="center" bg="whitesmoke">
+        <Flex direction="column" alignItems="center" bg="whitesmoke" minH="100%">
             <NavBar />
             <Wrapper variant="regular">
                 <Flex direction="column" width="100%">
@@ -27,8 +50,8 @@ const Profile : React.FC<ProfileProps> = ({}) => {
                         </Box>
                         <Flex direction="column" maxW="300px" minW="100px" width="100%">
                             <Flex alignItems="center" mb={3} justify="space-between">
-                                <Box fontSize="30px" mr={2}>{username}</Box>
-                                {isMe ? 
+                                <Box fontSize="30px" mr={2}>{data?.user.username}</Box>
+                                {data?.me.id == data?.user.id ? 
                                     <>
                                         <Button 
                                         size="ms" 
@@ -74,12 +97,28 @@ const Profile : React.FC<ProfileProps> = ({}) => {
                         </Flex>
                     </Flex>
                     <Divider/>
-                    <Flex flexWrap="wrap" mt={6} className="posts" justify="space-between">
-                        {posts.slice(0,7).map((post,i) => (
-                            <Box key={i} bg="tomato" width="31%" h="300px" mb={8}>
-                            </Box>
-                        ))}
-                    </Flex>
+                   {data?.user.posts != [] ? 
+                     <Flex flexWrap="wrap" mt={6} className="posts" justify="space-between">
+                     {data?.user.posts.map((post,i) => (
+                         <Box 
+                             w="31%" h="300px" 
+                             mb={8} key={post.id}
+                             _hover={{opacity : 0.5}} 
+                             cursor="pointer" 
+                             onClick={() => router.push({
+                                 pathname : "/post/[id]",
+                                 query : {id : post.id}
+                             })}
+                         >
+                         <Image src={post.url} h="100%" w="100%" objectFit="contain"/>
+                     </Box>
+                     ))}
+                    </Flex>   
+                    :
+                    <Box>
+                        There are no posts
+                    </Box>
+                    }
                 </Flex>
             </Wrapper>  
         </Flex>
