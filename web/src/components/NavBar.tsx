@@ -81,7 +81,7 @@ export const NavBar: React.FC<NavBarProps> = ({}) => {
                         bg="none"
                     />
                     <ActivityDropdown />
-                    <UserDropdown username={data?.me?.username}/>
+                    <UserDropdown id={data?.me?.id}/>
                 </Flex>
             </Flex>
         </Flex>

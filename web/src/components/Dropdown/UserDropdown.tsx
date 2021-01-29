@@ -5,12 +5,13 @@ import { MenuItem, Icon, Divider } from '@chakra-ui/react';
 import { HiSwitchHorizontal } from 'react-icons/hi';
 import { useRouter } from 'next/router';
 import { useMutation, gql, useApolloClient } from '@apollo/client';
+import { pushToProfile } from '../../utils/pushToProfile';
 
 interface UserDropdownProps {
-    username : string;
+    id : number;
 }
 
-export const UserDropdown: React.FC<UserDropdownProps> = ({username}) => {
+export const UserDropdown: React.FC<UserDropdownProps> = ({id}) => {
 
     const router = useRouter();
 
@@ -25,10 +26,7 @@ export const UserDropdown: React.FC<UserDropdownProps> = ({username}) => {
     return (
         <DropDown icon={FiUser}>
             <MenuItem onClick={() => 
-                router.push({
-                    pathname : '/[username]',
-                    query : {username, isMe : true}
-                })
+                pushToProfile(router, id)
             }>
                 <Icon as={FiUser as any} w="20px" h="20px" mr={2}/>
                 Profile
