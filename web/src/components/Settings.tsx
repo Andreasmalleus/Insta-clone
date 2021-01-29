@@ -3,6 +3,7 @@ import { Flex, Box, Button } from '@chakra-ui/react';
 import { NavBar } from './NavBar';
 import { Wrapper } from './Wrapper'
 import { useRouter } from 'next/router';
+import { Layout } from './Layout';
 
 interface SettingsProps {
     selected : string
@@ -51,8 +52,7 @@ export const Settings: React.FC<SettingsProps> = ({selected = "Edit profile", ch
         },
     ]
     return (
-        <Flex direction="column" alignItems="center" bg="whitesmoke" h="100%">
-            <NavBar />
+        <Layout>
             <Wrapper variant="regular">
                 <Box bg="white" w="100%" border="1px" borderColor="lightgrey" borderRadius="3px">
                     <Flex>
@@ -79,7 +79,7 @@ export const Settings: React.FC<SettingsProps> = ({selected = "Edit profile", ch
                     </Flex>
                 </Box>
             </Wrapper>
-        </Flex>
+        </Layout>
     );
 }
 

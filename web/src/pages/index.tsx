@@ -10,6 +10,7 @@ import { Suggestion } from "../components/Suggestion";
 import { gql, useQuery } from "@apollo/client";
 import Login from "./login";
 import { useRouter } from "next/router";
+import { Layout } from "../components/Layout";
 
 const Index = () => {
 
@@ -38,8 +39,7 @@ const Index = () => {
   `)
   
   return (
-    <Flex direction="column" alignItems="center" bg="whitesmoke">
-      <NavBar />
+    <Layout>
         <Wrapper variant="regular">
           <Flex direction="column" flexGrow={3} >
             <Box mr={6}>
@@ -85,7 +85,7 @@ const Index = () => {
           </Box>
           </Flex>
         </Wrapper>
-    </Flex>
+    </Layout>
   )
 };
 

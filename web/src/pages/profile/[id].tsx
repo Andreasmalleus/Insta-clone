@@ -6,6 +6,7 @@ import { Wrapper } from '../../components/Wrapper';
 import { FiUser, FiSettings } from "react-icons/fi";
 import { BsPersonCheckFill, BsThreeDots } from 'react-icons/bs';
 import { useQuery, gql } from '@apollo/client';
+import { Layout } from '../../components/Layout';
 
 interface ProfileProps{
     
@@ -40,8 +41,7 @@ const Profile : React.FC<ProfileProps> = ({}) => {
     )
     
     return (
-        <Flex direction="column" alignItems="center" bg="whitesmoke" minH="100%">
-            <NavBar />
+        <Layout>
             <Wrapper variant="regular">
                 <Flex direction="column" width="100%">
                     <Flex width="80%" justify="center" alignItems="center" mb={6}>
@@ -121,7 +121,7 @@ const Profile : React.FC<ProfileProps> = ({}) => {
                     }
                 </Flex>
             </Wrapper>  
-        </Flex>
+        </Layout>
     );
 }
 

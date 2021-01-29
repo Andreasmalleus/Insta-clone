@@ -6,6 +6,7 @@ import { Formik, Form } from 'formik';
 import { InputField } from '../components/InputField';
 import { useMutation, gql } from '@apollo/client';
 import { useRouter } from 'next/router';
+import { Layout } from '../components/Layout';
 
 interface CreateProps {
 
@@ -25,8 +26,7 @@ const Create: React.FC<CreateProps> = ({}) => {
     const router = useRouter();
 
     return (
-        <Flex direction="column" alignItems="center" bg="whitesmoke" h="100%"> 
-            <NavBar />
+        <Layout> 
             <Wrapper variant="small">
                 <Flex w="100%" h="400px" maxH="600px" bg="white" border="1px" borderColor="lightgrey" borderRadius="3px" justify="center" alignItems="center">
                     <Box mt={4}>
@@ -90,7 +90,7 @@ const Create: React.FC<CreateProps> = ({}) => {
                     </Box>
                 </Flex>
             </Wrapper>  
-        </Flex>
+        </Layout>
     );
 }
 
