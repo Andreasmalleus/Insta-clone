@@ -1,15 +1,18 @@
-import React from 'react'
-import { Flex, Box, Icon, Text, Button } from '@chakra-ui/react';
+import React, { createRef, useState, RefObject } from 'react'
+import { Flex, Box, Icon, Text, Button, Input, Image, Avatar } from '@chakra-ui/react';
 import { Settings } from '../../components/Settings';
 import { FiUser } from 'react-icons/fi';
 import { Formik, Form } from 'formik';
 import { InputField } from '../../components/InputField';
+import { getUrlFromFileReader } from '../../utils/getUrlFromFileReader';
 
 interface EditProps {
     selected : string
 }
 
 export const Edit: React.FC<EditProps> = ({}) => {
+
+    const [imageUrl, setImageUrl] = useState(null);
     
     return (
         <Settings selected="Edit profile">
@@ -17,6 +20,7 @@ export const Edit: React.FC<EditProps> = ({}) => {
                 <Box maxW="600px">
                     <Formik
                         initialValues={{
+                            file : null,
                             fullName : '',
                             username : '',
                             website : '',
@@ -29,18 +33,47 @@ export const Edit: React.FC<EditProps> = ({}) => {
                             console.log(values);
                         }}
                     >
-                        {({ isSubmitting, values }) => (
+                        {({ isSubmitting, values,setFieldValue }) => (
                             <Form>
                                 <Flex direction="column">
-                                    <Flex  mb={4} mx={4} alignItems="center" justify="flex-end">
-                                        <Icon as={FiUser as any} w="40px" h="40px" mr={8}/>
-                                        <Flex direction="column" w="300px" fontSize="15px" fontWeight="bold">
+                                    <Flex mb={4} mx={4} alignItems="center" justify="flex-end">
+                                        {
+                                            !imageUrl ?
+                                            <Icon as={FiUser as any} w="60px" h="60px" mr={6}/>
+                                            :
+                                            <Avatar src={imageUrl}  w="60px" h="60px" mr={6}/>
+                                        }
+                                        <Flex direction="column" w="300px" fontSize="15px" fontWeight="bold" justify="center">
                                             <Text>
                                                 Username
                                             </Text>
-                                            <Text color="blue.500">
-                                                Change Profile Picture
-                                            </Text>
+                                            <Box position="relative" w="150px"h="25px" textAlign="left">
+                                                <Text color="blue.500">Edit profile picture</Text>
+                                                <Input 
+                                                    type="file" 
+                                                    opacity="0.0" 
+                                                    position="absolute" 
+                                                    top="0" left="0" 
+                                                    right="0" bottom="0"
+                                                    w="100%" h="25px"
+                                                    onChange={async ({target : {validity, files: [file]}}) => {
+                                                        if(validity.valid){
+                                                            const type = file.type;
+                                                            if(type.includes("image")){
+                                                                setFieldValue("file", file)
+                                                                try{
+                                                                    const url = await getUrlFromFileReader(file);
+                                                                    setImageUrl(url)
+                                                                }catch(e){
+                                                                    console.log(e)
+                                                                }
+                                                            }else{
+                                                                console.log("needs to be an image or video")
+                                                            }
+                                                        }
+                                                    }}
+                                                />
+                                            </Box>
                                         </Flex>
                                     </Flex>
                                     <Flex direction="column" alignItems="flex-end">
