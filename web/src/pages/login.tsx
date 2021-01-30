@@ -5,7 +5,7 @@ import { InputField } from '../components/InputField';
 import NextLink from "next/link";
 import { gql, useMutation } from '@apollo/client';
 import { useRouter } from "next/router";
-import { checkIfFieldsAreEmpty } from '../utils/checkIfFieldsAreEmpty';
+import { checkIfSomeFieldsAreEmpty } from '../utils/checkFields';
 
 interface LoginProps {
 
@@ -63,7 +63,7 @@ const Login: React.FC<LoginProps> = ({}) => {
                                     colorScheme="teal" 
                                     isLoading={isSubmitting} 
                                     mx={4}
-                                    isDisabled={checkIfFieldsAreEmpty(values)}
+                                    isDisabled={checkIfSomeFieldsAreEmpty(values)}
                                 >
                                     Submit
                                 </Button>

@@ -5,6 +5,7 @@ import { FiUser } from 'react-icons/fi';
 import { Formik, Form } from 'formik';
 import { InputField } from '../../components/InputField';
 import { getUrlFromFileReader } from '../../utils/getUrlFromFileReader';
+import { checkIfAllFieldsAreEmpty } from '../../utils/checkFields';
 
 interface EditProps {
     selected : string
@@ -20,7 +21,7 @@ export const Edit: React.FC<EditProps> = ({}) => {
                 <Box maxW="600px">
                     <Formik
                         initialValues={{
-                            file : null,
+                            file : '',
                             fullName : '',
                             username : '',
                             website : '',
@@ -100,6 +101,7 @@ export const Edit: React.FC<EditProps> = ({}) => {
                                             type="submit" 
                                             colorScheme="teal" 
                                             isLoading={isSubmitting} 
+                                            isDisabled={checkIfAllFieldsAreEmpty(values)}
                                             mx={4}
                                             mb={6}
                                             w="300px"
