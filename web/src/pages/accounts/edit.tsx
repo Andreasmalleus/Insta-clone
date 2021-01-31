@@ -1,12 +1,11 @@
-import React, { createRef, useState, RefObject } from 'react'
-import { Flex, Box, Icon, Text, Button, Input, Image, Avatar } from '@chakra-ui/react';
-import { Settings } from '../../components/Settings';
-import { FiUser } from 'react-icons/fi';
-import { Formik, Form } from 'formik';
+import { gql, useMutation, useQuery } from '@apollo/client';
+import { Avatar, Box, Button, Flex, Input, Text } from '@chakra-ui/react';
+import { Form, Formik } from 'formik';
+import React, { useState } from 'react';
 import { InputField } from '../../components/InputField';
-import { getUrlFromFileReader } from '../../utils/getUrlFromFileReader';
+import { Settings } from '../../components/Settings';
 import { checkIfAllFieldsAreEmpty } from '../../utils/checkFields';
-import { useMutation, gql, useQuery } from '@apollo/client';
+import { getUrlFromFileReader } from '../../utils/getUrlFromFileReader';
 
 interface EditProps {
     selected : string
@@ -27,14 +26,11 @@ export const Edit: React.FC<EditProps> = ({}) => {
     const [uploadProfileImage] = useMutation(gql`
         mutation UploadProfileImage($file : Upload!){
             uploadProfileImage(file: $file){
+                id,
                 url
             }
         }
-    `, {
-        update : (cache) => {
-
-        }
-    })
+    `)
 
     const [imageUrl, setImageUrl] = useState(null);
     
@@ -55,10 +51,25 @@ export const Edit: React.FC<EditProps> = ({}) => {
                         }}
                         onSubmit={ async (values, {setErrors}) => {
                             if(values.file){
-                                const result = await uploadProfileImage({variables : {
-                                    file : values.file
-                                }})
-                                console.log(result)
+                                await uploadProfileImage({
+                                    variables : {
+                                        file : values.file
+                                    },
+                                    update : (cache, mutationResult) => {
+                                        const {id, url} = mutationResult.data.uploadProfileImage;
+                                        cache.writeFragment({
+                                            id : `User:${id}`,
+                                            fragment : gql`
+                                                fragment MyUser on User {
+                                                    url
+                                                }
+                                            `,
+                                            data : {
+                                                url
+                                            }
+                                        })
+                                    }
+                                })
                             }
                         }}
                     >
