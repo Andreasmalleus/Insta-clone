@@ -1,4 +1,4 @@
-import { Box, Divider, Flex, IconButton, Input, InputGroup, InputRightElement, Link, Image } from '@chakra-ui/react';
+import { Box, Divider, Flex, IconButton, Input, InputGroup, InputRightElement, Link, Image, Avatar } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import React from 'react';
 import { AiOutlineHeart } from 'react-icons/ai';
@@ -38,17 +38,20 @@ export const Post: React.FC<PostProps> = ({...props}) => {
 
     const router = useRouter();
 
-    const {username, id} = props.creator;;
+    const {username, id, url} = props.creator;
 
     return (
         <Box className="media" w="100%" border="1px" borderColor="lightgrey" borderRadius={4} my={6} mx={1} bg="white">
-            <Box className="header" mx={4} my={2}>
+            <Box className="header" mx={2} my={2}>
                 <Flex justify="space-between" alignItems="center">
                     <Box>
                         <Flex alignItems="center">
-                            <Box>
-                                <IconButton as={FiUser as any} w="35px" h="35px" aria-label="Go to user page" bg="none" onClick={() => pushToProfile(router,id)} cursor="pointer"/>
-                            </Box>
+                                <Box 
+                                    onClick={() => pushToProfile(router, id)} 
+                                    cursor="pointer"
+                                >
+                                    <Avatar src={url != "" ? url : ""} w="35px" h="35px" bg="black"/>
+                                </Box>
                             <Link ml={2} fontWeight="bold" onClick={() => pushToProfile(router,id)}>
                                 {username}
                             </Link>
@@ -61,15 +64,14 @@ export const Post: React.FC<PostProps> = ({...props}) => {
                 <Image src={props.url} maxH="700px" width="100%"/>
             </Flex>
             <Box className="footer">
-                <Box className="buttons" mx={4}>
+                <Box className="buttons" mx={2}>
                     <Flex justifyContent="space-between" alignItems="center">
                         <Box mt={2}>
                             <Flex>
-                                <IconButton as={AiOutlineHeart as any} w="35px" h="35px" mr={4} aria-label="Like post" bg="none" cursor="pointer"/>
+                                <IconButton as={AiOutlineHeart as any} w="35px" h="35px" aria-label="Like post" bg="none" cursor="pointer"/>
                                 <IconButton 
                                     as={IoChatbubbleOutline as any} 
                                     w="30px" h="30px" 
-                                    mr={4} 
                                     aria-label="Add comment" 
                                     bg="none"
                                     onClick={() => {
@@ -89,7 +91,7 @@ export const Post: React.FC<PostProps> = ({...props}) => {
                         </Box>
                     </Flex>
                 </Box>
-                <Box className="details" fontSize="15px" mx={4}>
+                <Box className="details" fontSize="15px" mx={2}>
                     <Box fontWeight="bold" onClick={() => console.log("Open likes modal")} border="none" cursor="pointer">
                         {props.likes} likes
                     </Box>

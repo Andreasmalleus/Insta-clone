@@ -6,7 +6,7 @@ import { Formik, Form } from 'formik';
 import { InputField } from '../../components/InputField';
 import { getUrlFromFileReader } from '../../utils/getUrlFromFileReader';
 import { checkIfAllFieldsAreEmpty } from '../../utils/checkFields';
-import { useMutation, gql } from '@apollo/client';
+import { useMutation, gql, useQuery } from '@apollo/client';
 
 interface EditProps {
     selected : string
@@ -14,13 +14,27 @@ interface EditProps {
 
 export const Edit: React.FC<EditProps> = ({}) => {
 
+    const {data} = useQuery(gql`
+    query Me{
+        me{
+            id,
+            username,
+            url
+        }
+        }
+    `)
+
     const [uploadProfileImage] = useMutation(gql`
         mutation UploadProfileImage($file : Upload!){
             uploadProfileImage(file: $file){
                 url
             }
         }
-    `)
+    `, {
+        update : (cache) => {
+
+        }
+    })
 
     const [imageUrl, setImageUrl] = useState(null);
     
@@ -53,14 +67,14 @@ export const Edit: React.FC<EditProps> = ({}) => {
                                 <Flex direction="column">
                                     <Flex mb={4} mx={4} alignItems="center" justify="flex-end">
                                         {
-                                            !imageUrl ?
-                                            <Icon as={FiUser as any} w="60px" h="60px" mr={6}/>
+                                            data?.me.url == ""?
+                                            <Avatar w="60px" h="60px" mr={6} bg="black"/>
                                             :
-                                            <Avatar src={imageUrl}  w="60px" h="60px" mr={6}/>
+                                            <Avatar src={imageUrl ? imageUrl : data?.me.url}  w="60px" h="60px" mr={6}/>
                                         }
                                         <Flex direction="column" w="300px" fontSize="15px" fontWeight="bold" justify="center">
                                             <Text>
-                                                Username
+                                                {data?.me.username}
                                             </Text>
                                             <Box position="relative" w="150px"h="25px" textAlign="left">
                                                 <Text color="blue.500">Edit profile picture</Text>

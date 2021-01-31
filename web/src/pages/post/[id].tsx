@@ -1,5 +1,5 @@
 import React from 'react'
-import { Flex, Box, Icon, Text, InputGroup, Input, InputRightElement, IconButton, Link, Spinner, Image } from '@chakra-ui/react';
+import { Flex, Box, Icon, Text, InputGroup, Input, InputRightElement, IconButton, Link, Spinner, Image, Avatar } from '@chakra-ui/react';
 import { Wrapper } from '../../components/Wrapper';
 import { FiUser, FiSend, FiBookmark } from 'react-icons/fi';
 import { BsThreeDots } from 'react-icons/bs';
@@ -10,6 +10,7 @@ import { useQuery, gql } from '@apollo/client';
 import { Layout } from '../../components/Layout';
 import { NextPage } from 'next';
 import { pushToProfile } from '../../utils/pushToProfile';
+import { Comment } from "../../components/Comment";
 
 
 const Post: NextPage<{postId: number}> = ({postId}) => {
@@ -26,6 +27,7 @@ const Post: NextPage<{postId: number}> = ({postId}) => {
                 creator{
                     id
                     username,
+                    url
                 }
                 createdAt
             }
@@ -54,7 +56,7 @@ const Post: NextPage<{postId: number}> = ({postId}) => {
         )
     }
 
-    const {username, id} = data.post.creator;
+    const {username, id, url} = data?.post.creator;
 
     return (
         <Layout>
@@ -66,10 +68,13 @@ const Post: NextPage<{postId: number}> = ({postId}) => {
                     <Flex direction="column" borderLeft="1px" borderColor="lightgrey" w="300px">
 
                         <Flex h="70px" justify="space-between" alignItems="center" className="user info" borderBottom="1px" borderColor="lightgrey">
-                            <Flex alignItems="center" my={4} ml={1}>
-                                <IconButton as={FiUser as any} w="30px" h="30px" aria-label="user-image" bg="none" onClick={() => {
-                                    pushToProfile(router, id)
-                                }} cursor="pointer"/>
+                            <Flex alignItems="center" my={2} ml={2}>
+                                <Box 
+                                    onClick={() => pushToProfile(router, id)} 
+                                    cursor="pointer"
+                                >
+                                    <Avatar src={url != "" ? url : ""} w="40px" h="40px" bg="black"/>
+                                </Box>
                                 <Link ml={2} fontWeight="bold" onClick={() => {
                                     pushToProfile(router, id)
                                 }}>
@@ -82,17 +87,31 @@ const Post: NextPage<{postId: number}> = ({postId}) => {
                         <Flex borderColor="lightgrey" direction="column" className="comments" overflow="hidden" justify="space-between" h="100%">
                             <Box overflowY="scroll" h="100%">
                                 <Flex mt={2} alignItems="flex-start" ml={2}>
-                                    <Icon as={FiUser} w="30px" h="30px" mr={2}/>
+                                    <Box 
+                                        onClick={() => pushToProfile(router, id)} 
+                                        cursor="pointer"
+                                        mr={2}
+                                    >
+                                        <Avatar src={url != "" ? url : ""} w="40px" h="40px" bg="black"/>
+                                    </Box>
                                     <Flex direction="column" w="100%"> 
                                         <Box>
                                             <Box as="span" fontWeight="bold" mr={2}>{username}</Box>  
                                             <Box as="span" fontSize="15px">{data.post.description}</Box>    
                                         </Box> 
-                                        <Text mr={3} mt={3} color="grey" fontSize="13px">{data.post.createdAt}</Text>    
+                                        <Text mr={3} mt={2} color="grey" fontSize="13px">{data.post.createdAt}</Text>    
                                     </Flex>
                                     <Box w="15px" h="15px" mr={2} mt={2}/>
                                 </Flex>
-                                
+                                {
+                                    data?.post?.comments 
+                                    ? 
+                                    data?.post?.comments.map(comment => (
+                                        <Comment key={comment.id} {...comment}></Comment>
+                                    ))
+                                    :
+                                    null
+                                }
                                 <Flex w="100%" justify="center">
                                     <IconButton aria-label="More comments" as={IoAddCircleOutline} bg="none" w="30px" h="30px" my={4}/>
                                 </Flex>

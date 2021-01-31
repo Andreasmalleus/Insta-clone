@@ -1,5 +1,5 @@
 import React from 'react'
-import { Box, Flex, Icon, IconButton, Link, Spinner } from '@chakra-ui/react';
+import { Box, Flex, Icon, IconButton, Link, Spinner, Avatar } from '@chakra-ui/react';
 import { FiUser } from 'react-icons/fi';
 import { useRouter } from 'next/router';
 import { gql, useQuery, useMutation, useApolloClient } from '@apollo/client';
@@ -17,6 +17,7 @@ export const User: React.FC<UserProps> = ({}) => {
             me{
                 id,
                 username,
+                url
             }
         }
     `)
@@ -39,16 +40,20 @@ export const User: React.FC<UserProps> = ({}) => {
                 <Flex alignItems="center" width="100%" justifyContent="space-between">
                 <Box mr={2}>
                     <Flex alignItems="center">
-                        <Box>
-                            <Icon as={FiUser as any}w="55px" h="55px" mr={1} aria-label="user-image" bg="none" onClick={() => pushToProfile(router, data.me.id)} cursor="pointer"/>
-                        </Box>
+                    <Box 
+                        onClick={() => pushToProfile(router, data.me.id)} 
+                        cursor="pointer"
+                        mr={2}
+                    >
+                        <Avatar src={data.me.url != "" ? data.me.url : ""} w="55px" h="55px" bg="black"/>
+                    </Box>
                         <Link mr={2} onClick={() => pushToProfile(router, data.me.id)}>
                             {data.me.username}
                         </Link>
                     </Flex>
                 </Box>
                 <Link 
-                    color="coral" 
+                    color="blue.500" 
                     fontWeight="bold" 
                     fontSize="12px" 
                     cursor="pointer"
