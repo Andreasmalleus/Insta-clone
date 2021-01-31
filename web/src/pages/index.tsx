@@ -1,16 +1,13 @@
-import { Box, Flex, Spinner } from "@chakra-ui/react";
+import { gql, useQuery } from "@apollo/client";
+import { Box, Flex } from "@chakra-ui/react";
 import React from "react";
-import { NavBar } from "../components/NavBar";
-import { Wrapper } from "../components/Wrapper";
-import { User } from "../components/User";
+import { Layout } from "../components/Layout";
 import { Post } from "../components/Post";
 import { Story } from "../components/Story";
-import { users } from "../mockData";
 import { Suggestion } from "../components/Suggestion";
-import { gql, useQuery } from "@apollo/client";
-import Login from "./login";
-import { useRouter } from "next/router";
-import { Layout } from "../components/Layout";
+import { User } from "../components/User";
+import { Wrapper } from "../components/Wrapper";
+import { users } from "../mockData";
 
 const Index = () => {
 
@@ -22,7 +19,8 @@ const Index = () => {
         url,
         type,
         creator{
-          id
+          id,
+          url,
           username,
         }
       }

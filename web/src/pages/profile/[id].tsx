@@ -1,11 +1,11 @@
-import React from 'react'
+import { gql, useQuery } from '@apollo/client';
+import { Avatar, Box, Button, Divider, Flex, Icon, IconButton, Image } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
-import { Flex, Icon, Box, Button, Divider, IconButton, Image, Avatar } from '@chakra-ui/react';
-import { Wrapper } from '../../components/Wrapper';
-import { FiUser, FiSettings } from "react-icons/fi";
+import React from 'react';
 import { BsPersonCheckFill, BsThreeDots } from 'react-icons/bs';
-import { useQuery, gql } from '@apollo/client';
+import { FiSettings } from "react-icons/fi";
 import { Layout } from '../../components/Layout';
+import { Wrapper } from '../../components/Wrapper';
 import { pushToProfile } from '../../utils/pushToProfile';
 
 interface ProfileProps{
@@ -22,6 +22,7 @@ const Profile : React.FC<ProfileProps> = ({}) => {
             user(id : $id){
                 id,
                 username,
+                url
                 posts{
                     id,
                     description,
