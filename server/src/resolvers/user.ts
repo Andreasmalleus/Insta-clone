@@ -1,11 +1,15 @@
-import { Arg, Ctx, Field, Mutation, ObjectType, Query, Resolver, Int, Root, FieldResolver } from "type-graphql";
-import { getConnection } from "typeorm";
+import { Arg, Ctx, Field, Mutation, ObjectType, Query, Resolver, Int, Root, FieldResolver, UseMiddleware } from "type-graphql";
+import { getConnection, UpdateResult } from "typeorm";
 import { User } from "../entities/User";
 import { validateRegister } from "../utils/validateRegister";
 import { RegisterInput } from "./RegisterInput";
 import argon from "argon2";
 import { MyContext } from "../types";
 import { Post } from "../entities/Post";
+import { isAuth } from "../middlewares/isAuth";
+import { FileUpload } from "graphql-upload";
+import { GraphQLUpload } from "apollo-server-express";
+import AWSApi from "../utils/awsApi";
 
 @ObjectType()
 class FieldError{
@@ -25,6 +29,8 @@ class UserResponse{
     user?: User
 }
 
+const api = new AWSApi()
+
 @Resolver(User)
 export class UserResolver{
 
@@ -32,10 +38,39 @@ export class UserResolver{
     async me(
         @Ctx() {req} : MyContext
     ) : Promise<User | null> {                
-        const user = await User.findOne({where : {id : req.session.userId}})
+        const user = await User.findOne({where: {id: req.session.userId}})
         if(!user){
             return null;
         }
+        return user;
+    }
+
+    
+    @Mutation(() => User!)
+    @UseMiddleware(isAuth)
+    async uploadProfileImage(
+        @Arg("file", () => GraphQLUpload!) file : FileUpload,
+        @Ctx() {req} : MyContext
+    ) : Promise<User>{
+        const {userId} = req.session;
+
+        const {filename, createReadStream} = await file;
+        const key = `profile/${userId}/${filename}`
+
+        const {url} = await api.upload(key, createReadStream);
+
+        const result = await getConnection()
+        .createQueryBuilder()
+        .update(User)
+        .set({
+            url
+        })
+        .where("id = :id", {id : userId})
+        .returning('*')
+        .execute();
+
+        const user = result.raw[0];
+
         return user;
     }
 

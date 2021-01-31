@@ -6,12 +6,21 @@ import { Formik, Form } from 'formik';
 import { InputField } from '../../components/InputField';
 import { getUrlFromFileReader } from '../../utils/getUrlFromFileReader';
 import { checkIfAllFieldsAreEmpty } from '../../utils/checkFields';
+import { useMutation, gql } from '@apollo/client';
 
 interface EditProps {
     selected : string
 }
 
 export const Edit: React.FC<EditProps> = ({}) => {
+
+    const [uploadProfileImage] = useMutation(gql`
+        mutation UploadProfileImage($file : Upload!){
+            uploadProfileImage(file: $file){
+                url
+            }
+        }
+    `)
 
     const [imageUrl, setImageUrl] = useState(null);
     
@@ -31,7 +40,12 @@ export const Edit: React.FC<EditProps> = ({}) => {
                             gender : '',
                         }}
                         onSubmit={ async (values, {setErrors}) => {
-                            console.log(values);
+                            if(values.file){
+                                const result = await uploadProfileImage({variables : {
+                                    file : values.file
+                                }})
+                                console.log(result)
+                            }
                         }}
                     >
                         {({ isSubmitting, values,setFieldValue }) => (
