@@ -8,33 +8,13 @@ import { Suggestion } from "../components/Suggestion";
 import { User } from "../components/User";
 import { Wrapper } from "../components/Wrapper";
 import { users } from "../mockData";
+import { FETCH_POSTS, FETCH_ME } from "../graphql/queries";
 
 const Index = () => {
 
-  const { data : posts} = useQuery(gql`
-    query getPosts{
-      posts{
-        id,
-        description,
-        url,
-        type,
-        creator{
-          id,
-          url,
-          username,
-        }
-      }
-    }
-  `);  
+  const { data : posts} = useQuery(FETCH_POSTS);  
 
-  const {data, loading, error} = useQuery(gql`
-    query Me{
-        me{
-            id,
-            username,
-        }
-    }
-  `)
+  const {data, loading, error} = useQuery(FETCH_ME)
   
   return (
     <Layout>

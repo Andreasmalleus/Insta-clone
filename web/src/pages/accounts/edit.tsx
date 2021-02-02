@@ -6,6 +6,8 @@ import { InputField } from '../../components/InputField';
 import { Settings } from '../../components/Settings';
 import { checkIfAllFieldsAreEmpty } from '../../utils/checkFields';
 import { getUrlFromFileReader } from '../../utils/getUrlFromFileReader';
+import { FETCH_ME } from '../../graphql/queries';
+import { UPLOAD_PROFILE_IMAGE } from '../../graphql/mutations';
 
 interface EditProps {
     selected : string
@@ -13,24 +15,9 @@ interface EditProps {
 
 export const Edit: React.FC<EditProps> = ({}) => {
 
-    const {data} = useQuery(gql`
-    query Me{
-        me{
-            id,
-            username,
-            url
-        }
-        }
-    `)
+    const {data} = useQuery(FETCH_ME)
 
-    const [uploadProfileImage] = useMutation(gql`
-        mutation UploadProfileImage($file : Upload!){
-            uploadProfileImage(file: $file){
-                id,
-                url
-            }
-        }
-    `)
+    const [uploadProfileImage] = useMutation(UPLOAD_PROFILE_IMAGE)
 
     const [imageUrl, setImageUrl] = useState(null);
     

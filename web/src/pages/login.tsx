@@ -6,6 +6,7 @@ import NextLink from "next/link";
 import { gql, useMutation } from '@apollo/client';
 import { useRouter } from "next/router";
 import { checkIfSomeFieldsAreEmpty } from '../utils/checkFields';
+import { LOGIN } from '../graphql/mutations';
 
 interface LoginProps {
 
@@ -13,20 +14,7 @@ interface LoginProps {
 
 const Login: React.FC<LoginProps> = ({}) => {
 
-    const [login] = useMutation(gql`
-        mutation Login($usernameOrEmail: String!, $password: String!){
-            login(usernameOrEmail:$usernameOrEmail, password : $password){
-                user{
-                    id,
-                    username
-                }
-                error{
-                    field,
-                    message
-                }
-            }
-        }
-    `)
+    const [login] = useMutation(LOGIN)
 
     const router = useRouter();
 

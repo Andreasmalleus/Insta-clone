@@ -7,6 +7,8 @@ import { useMutation, gql } from '@apollo/client';
 import { useRouter } from 'next/router';
 import { Layout } from '../components/Layout';
 import { getUrlFromFileReader } from '../utils/getUrlFromFileReader';
+import { FETCH_POSTS } from "../graphql/queries";
+import { CREATE_POST } from '../graphql/mutations';
 
 interface CreateProps {
 
@@ -16,37 +18,7 @@ const Create: React.FC<CreateProps> = ({}) => {
 
     const [imageUrl, setImageUrl] = useState(null);
 
-    const FETCH_POSTS = gql`
-        query getPosts{
-            posts{
-                id,
-                description,
-                url,
-                type,
-                creator{
-                    id,
-                    url,
-                    username,
-                }
-            }
-        }
-    `
-
-    const [createPost] = useMutation(gql`
-        mutation CreatePost($file: Upload!, $description: String!){
-            createPost(file : $file, description : $description){
-                id,
-                description,
-                url,
-                type,
-                creator{
-                    id,
-                    url,
-                    username,
-                }
-            }
-        }
-    `) 
+    const [createPost] = useMutation(CREATE_POST) 
 
     const router = useRouter();
 

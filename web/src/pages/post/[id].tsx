@@ -11,28 +11,14 @@ import { Layout } from '../../components/Layout';
 import { NextPage } from 'next';
 import { pushToProfile } from '../../utils/pushToProfile';
 import { Comment } from "../../components/Comment";
+import { FETCH_POST } from '../../graphql/queries';
 
 
 const Post: NextPage<{postId: number}> = ({postId}) => {
 
     const router = useRouter();
 
-    const {data,error,loading} = useQuery(gql`
-        query Post($id: Int!){
-            post(id : $id){
-                id,
-                description,
-                url,
-                type,
-                creator{
-                    id
-                    username,
-                    url
-                }
-                createdAt
-            }
-        }
-    `,{
+    const {data,error,loading} = useQuery(FETCH_POST,{
         variables : {
             id : postId
         }

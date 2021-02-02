@@ -7,6 +7,7 @@ import { useRouter } from 'next/router';
 import { gql, useMutation } from '@apollo/client';
 import { validateRegister } from '../utils/validateRegister';
 import { checkIfSomeFieldsAreEmpty } from '../utils/checkFields';
+import { REGISTER } from '../graphql/mutations';
 
 interface LoginProps {
 
@@ -14,20 +15,7 @@ interface LoginProps {
 
 const Login: React.FC<LoginProps> = ({}) => {
 
-    const [register] = useMutation(gql`
-        mutation Register($options : RegisterInput!){
-            register(options : $options){
-                user{
-                    id,
-                    username,
-                }
-                error{
-                    field,
-                    message
-                }
-            }
-        }
-    `)
+    const [register] = useMutation(REGISTER)
 
     const router = useRouter();
 

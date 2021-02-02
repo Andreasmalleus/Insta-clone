@@ -8,6 +8,7 @@ import { Layout } from '../components/Layout';
 import { AiFillHeart } from 'react-icons/ai';
 import { IoChatbubble } from 'react-icons/io5';
 import { useRouter } from 'next/router';
+import { FETCH_POSTS } from '../graphql/queries';
 
 
 interface ExploreProps {
@@ -18,20 +19,7 @@ export const Explore: React.FC<ExploreProps> = ({}) => {
 
     const router = useRouter();
 
-    const {data,loading,error} = useQuery(gql`
-        query getPosts{
-            posts{
-                id,
-                description,
-                url,
-                type,
-                creator{
-                id
-                username,
-                }
-            }
-        }
-    `)
+    const {data,loading,error} = useQuery(FETCH_POSTS)
 
     if(loading){
         return (
