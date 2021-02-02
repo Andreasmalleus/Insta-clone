@@ -14,11 +14,34 @@ interface CreateProps {
 
 const Create: React.FC<CreateProps> = ({}) => {
 
+    const FETCH_POSTS = gql`
+        query getPosts{
+            posts{
+                id,
+                description,
+                url,
+                type,
+                creator{
+                    id,
+                    url,
+                    username,
+                }
+            }
+        }
+    `
+
     const [createPost] = useMutation(gql`
         mutation CreatePost($file: Upload!, $description: String!){
             createPost(file : $file, description : $description){
+                id,
                 description,
-                url
+                url,
+                type,
+                creator{
+                    id,
+                    url,
+                    username,
+                }
             }
         }
     `) 
@@ -40,11 +63,14 @@ const Create: React.FC<CreateProps> = ({}) => {
                                     variables : {
                                         ...values
                                     },
-                                    update : cache => {
-                                        console.log(cache);
-                                        cache.evict({
-                                            id : 'ROOT_QUERY',
-                                            fieldName : 'posts'
+                                    update : (cache, mutationResult) => {
+                                        const post = mutationResult.data.createPost;
+                                        const { posts } = cache.readQuery({
+                                            query : FETCH_POSTS
+                                        })
+                                        cache.writeQuery({
+                                            query : FETCH_POSTS,
+                                        data : {posts : [...posts, post]}
                                         })
                                     }
                                 })

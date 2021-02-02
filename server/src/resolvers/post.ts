@@ -1,4 +1,4 @@
-import { Arg, Field, InputType, Mutation, Query, Resolver, Ctx, UseMiddleware, Int } from "type-graphql";
+import { Arg, Field, InputType, Mutation, Query, Resolver, Ctx, UseMiddleware, Int, FieldResolver, Root } from "type-graphql";
 import { getConnection } from "typeorm";
 import { Comment } from "../entities/Comment";
 import { Like } from "../entities/Like";
@@ -8,6 +8,7 @@ import { GraphQLUpload } from "apollo-server-express"
 import { MyContext } from "../types";
 import AWSApi from "../utils/awsApi";
 import { isAuth } from "../middlewares/isAuth";
+import { User } from "../entities/User";
 
 /*@InputType()
 class CreatePostInput{
@@ -29,7 +30,7 @@ class CommentInput{
 
 const api = new AWSApi()
 
-@Resolver()
+@Resolver(Post)
 export class PostResolver{
 
     @Query(() => [Post], {nullable : true})
@@ -37,16 +38,8 @@ export class PostResolver{
     ): Promise<Post[] | null>{
         const posts = await getConnection()
         .query(`
-            select p.*,
-            json_build_object(
-                'id' , u.id,
-                'username' , u.username,
-                'email' , u.email,
-                'createdAt', u."createdAt",
-                'updatedAt', u."updatedAt"
-            ) creator
+            select p.*
             from public.post p
-            inner join public.user u on u.id = p."creatorId"
             order by p."createdAt" desc
         `)
         if(!posts){
@@ -153,5 +146,16 @@ export class PostResolver{
         @Arg("postId") postId : number,
     ): Promise<Comment[] | null>{
         return await Comment.find({where : {postId}})
+    }
+
+    @FieldResolver(() => User)
+    async creator(
+        @Root() post : Post,
+    ) : Promise<User | null>{
+        const user = await User.findOne({where : {id : post.creatorId}})
+        if(!user){
+            return null
+        }
+        return user;
     }
 }
