@@ -141,13 +141,6 @@ export class PostResolver{
         return comment;
     }
 
-    @Query(() => [Comment], {nullable : true})
-    async comments(
-        @Arg("postId") postId : number,
-    ): Promise<Comment[] | null>{
-        return await Comment.find({where : {postId}})
-    }
-
     @FieldResolver(() => User)
     async creator(
         @Root() post : Post,
@@ -157,5 +150,23 @@ export class PostResolver{
             return null
         }
         return user;
+    }
+
+    @FieldResolver(() => [Comment], {nullable : true})
+    async comments(
+        @Root() post : Post,
+        @Arg("limit", () => Int, {nullable : true}) limit : number,
+    ): Promise<Comment[] | null>{
+        const comments = await getConnection()
+        .query(`
+            select * from public.comment c
+            where c."postId" = $1
+            limit $2
+        `, [post.id, limit])
+
+        if(!comments){
+            return null;
+        }
+        return comments;
     }
 }

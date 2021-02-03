@@ -12,7 +12,11 @@ import { FETCH_POSTS, FETCH_ME } from "../graphql/queries";
 
 const Index = () => {
 
-  const { data : posts} = useQuery(FETCH_POSTS);  
+  const { data : posts} = useQuery(FETCH_POSTS, {
+    variables : {
+      limit : 2
+    }
+  });  
 
   const {data, loading, error} = useQuery(FETCH_ME)
   

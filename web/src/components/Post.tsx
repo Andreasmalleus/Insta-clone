@@ -105,7 +105,7 @@ export const Post: React.FC<PostProps> = ({...props}) => {
                     </Flex>
                 </Box>
                 {props.comments ?
-                    <Box className="comments" fontSize="15px" mx={4}>
+                    <Box className="comments" fontSize="15px" mx={2}>
                     {props?.comments.length > 2 
                         ?
                         <Link color="grey">
@@ -113,7 +113,7 @@ export const Post: React.FC<PostProps> = ({...props}) => {
                         </Link>
                         : null
                     }
-                    {props?.comments.slice(0,2).map((comment,i) => (
+                    {props?.comments.map((comment,i) => (
                         <Flex className="comment" key={i} justify="space-between" alignItems="center">
                             <Box>
                                 <Link as="span" fontWeight="bold" mr={1} cursor="pointer" onClick={() => pushToProfile(router,comment.creator.id)}>
@@ -129,7 +129,7 @@ export const Post: React.FC<PostProps> = ({...props}) => {
                     </Box>
                 : null       
                 }   
-                <Box className="post-time" my={2} mx={4} fontSize="13px" color="grey" cursor="pointer">
+                <Box className="post-time" my={2} mx={2} fontSize="13px" color="grey" cursor="pointer">
                     {props.createdAt}
                 </Box>
                 <Divider size="4px"></Divider>

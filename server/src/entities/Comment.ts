@@ -17,15 +17,18 @@ export class Comment extends BaseEntity{
 
     @ManyToOne(() => Post, post => post.comments, {
         onDelete : 'CASCADE'
-    })
+    })//if post is deleted then comments are also deleted
     post : Post;
 
     @Field()
     @PrimaryColumn()
     postId : number;
 
-    @ManyToOne(() => User, user => user.comments)
-    user : User;
+    @Field(() => User)//graphql type
+    @ManyToOne(() => User, user => user.comments, {
+        onDelete : 'CASCADE'
+    })//if user is deleted then comments are also deleted
+    creator : User;
 
     @Field()
     @PrimaryColumn()

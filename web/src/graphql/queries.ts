@@ -1,7 +1,7 @@
 import { gql } from "@apollo/client";
 
 export const FETCH_POSTS = gql`
-    query getPosts{
+    query getPosts($limit: Int){
         posts{
             id,
             description,
@@ -12,6 +12,13 @@ export const FETCH_POSTS = gql`
                 url,
                 username,
             }
+            comments(limit : $limit){
+                text,
+                creator{
+                    username
+                }
+            }
+            createdAt
         }
     }
 `
