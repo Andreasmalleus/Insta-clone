@@ -20,11 +20,11 @@ class CreatePostInput{
 
 @InputType()
 class CommentInput{
-    @Field()
+    @Field(() => Int!)
     postId! : number
-    @Field()
+    @Field(() => Int!)
     userId! : number
-    @Field()
+    @Field(() => String!)
     text! : string
 }
 

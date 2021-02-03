@@ -1,11 +1,13 @@
-import { Box, Divider, Flex, IconButton, Input, InputGroup, InputRightElement, Link, Image, Avatar } from '@chakra-ui/react';
+import { Box, Divider, Flex, IconButton, Input, InputGroup, InputRightElement, Link, Image, Avatar, Button } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
-import React from 'react';
+import React, { useState } from 'react';
 import { AiOutlineHeart } from 'react-icons/ai';
 import { BsThreeDots } from 'react-icons/bs';
 import { FiBookmark, FiSend, FiUser } from 'react-icons/fi';
 import { IoChatbubbleOutline } from 'react-icons/io5';
 import { pushToProfile } from '../utils/pushToProfile';
+import { useMutation } from '@apollo/client';
+import { COMMENT } from '../graphql/mutations';
 
 
 type creator = {
@@ -32,11 +34,16 @@ interface PostProps {
     comments : comment[];
     updatedAt : string;
     createdAt : string;
+    userId : number
 }
 
 export const Post: React.FC<PostProps> = ({...props}) => {
 
     const router = useRouter();
+    
+    const [text, setText] = useState("");
+
+    const [createComment] = useMutation(COMMENT);
 
     const {username, id, url} = props.creator;
 
@@ -140,10 +147,25 @@ export const Post: React.FC<PostProps> = ({...props}) => {
                             placeholder="Add a comment"
                             variant="unstyled"
                             p="10px"
+                            defaultValue={text}
+                            onChange={({target : {value}}) => {
+                                setText(value)
+                            }}
                         />
                         <InputRightElement
-                            children={"Post"}
-                            onClick={() => console.log("post")}
+                            children={<Button isDisabled={text ? false : true}>Post</Button>}
+                            onClick={() => {
+                                createComment({
+                                    variables : {
+                                        options : {
+                                            postId : props.id,
+                                            userId : props.userId,
+                                            text
+                                        }
+                                    }
+                                })
+                            }}
+                            color="blue.500"
                         />
                     </InputGroup>
                 </Box>

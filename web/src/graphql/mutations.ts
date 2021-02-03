@@ -54,3 +54,14 @@ export const UPLOAD_PROFILE_IMAGE = gql`
         }
     }
 `
+
+export const COMMENT = gql`
+    mutation Comment($options: CommentInput!){
+        comment(options: $options){
+            text,
+            creator{
+                username
+            }
+        }
+    }
+`

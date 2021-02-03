@@ -39,7 +39,7 @@ const Index = () => {
               <Box className="posts" maxW="650px">
                 <Flex direction="column">
                     {posts.posts.map(post => (
-                      <Post key={post.id} {...post}></Post>
+                      <Post key={post.id} {...post} userId={data?.me.id}></Post>
                     ))}
                 </Flex>
               </Box>  
