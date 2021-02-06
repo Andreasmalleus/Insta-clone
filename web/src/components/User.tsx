@@ -4,6 +4,7 @@ import { FiUser } from 'react-icons/fi';
 import { useRouter } from 'next/router';
 import { gql, useQuery, useMutation, useApolloClient } from '@apollo/client';
 import { pushToProfile } from '../utils/pushToProfile';
+import { FETCH_ME } from '../graphql/queries';
 
 interface UserProps {
 }
@@ -12,15 +13,7 @@ export const User: React.FC<UserProps> = ({}) => {
 
     const router = useRouter();
 
-    const {data, loading, error} = useQuery(gql`
-        query Me{
-            me{
-                id,
-                username,
-                url
-            }
-        }
-    `)
+    const {data, loading, error} = useQuery(FETCH_ME)
 
     const [logout] = useMutation(gql`
         mutation Logout{

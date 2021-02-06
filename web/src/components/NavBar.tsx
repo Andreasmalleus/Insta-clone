@@ -9,6 +9,7 @@ import { useRouter } from 'next/router';
 import { UserDropdown } from './Dropdown/UserDropdown';
 import { ActivityDropdown } from './Dropdown/ActivityDropdown';
 import { IoCreateOutline, IoCreate } from 'react-icons/io5';
+import { FETCH_ME } from '../graphql/queries';
 
 interface NavBarProps {
 
@@ -22,14 +23,7 @@ export const NavBar: React.FC<NavBarProps> = ({}) => {
         setColorMode('light')
     })
 
-    const {data} = useQuery(gql`
-        query Me{
-            me{
-                id,
-                username,
-            }
-        }
-    `)    
+    const {data} = useQuery(FETCH_ME)    
 
     const router = useRouter();    
     

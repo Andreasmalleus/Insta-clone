@@ -13,6 +13,7 @@ export const FETCH_POSTS = gql`
                 username,
             }
             comments(limit : $limit){
+                id,
                 text,
                 creator{
                     username

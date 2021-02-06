@@ -161,6 +161,7 @@ export class PostResolver{
         .query(`
             select * from public.comment c
             where c."postId" = $1
+            order by c."createdAt" desc
             limit $2
         `, [post.id, limit])
 
