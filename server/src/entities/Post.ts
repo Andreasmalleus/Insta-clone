@@ -3,6 +3,7 @@ import { BaseEntity, Column, CreateDateColumn, Entity, ManyToOne, OneToMany, Pri
 import { Comment } from "./Comment";
 import { Like } from "./Like";
 import { User } from "./User";
+import { PaginatedComments } from "../resolvers/types";
 
 @ObjectType()
 @Entity()
@@ -36,9 +37,9 @@ export class Post extends BaseEntity{
     @OneToMany(() => Like, like => like.postId)
     likes : Like[]
 
-    @Field(() => [Comment])
+    @Field(() => PaginatedComments)
     @OneToMany(() => Comment, comment => comment.postId)
-    comments : Comment[]
+    comments : PaginatedComments
 
     @Field(() => String)
     @CreateDateColumn({type : 'date'})

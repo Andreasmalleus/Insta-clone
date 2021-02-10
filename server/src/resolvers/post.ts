@@ -9,6 +9,7 @@ import { MyContext } from "../types";
 import AWSApi from "../utils/awsApi";
 import { isAuth } from "../middlewares/isAuth";
 import { User } from "../entities/User";
+import { PaginatedComments } from "./types";
 
 @InputType()
 class CommentInput{
@@ -169,22 +170,35 @@ export class PostResolver{
         return user;
     }
 
-    @FieldResolver(() => [Comment], {nullable : true})
+    @FieldResolver(() => PaginatedComments, {nullable : true})
     async comments(
         @Root() post : Post,
-        @Arg("limit", () => Int, {nullable : true}) limit : number,
-    ): Promise<Comment[] | null>{
+        @Arg("limit", () => Int) limit : number,
+        @Arg("cursor", () => String, {nullable : true}) cursor : string,
+    ): Promise<PaginatedComments| null>{
+        const realLimit = Math.min(10, limit) + 1;
+
+        const replacements : any[] = [post.id, realLimit]
+
+        if(cursor){
+            replacements.push(new Date(parseInt(cursor)))
+        }
+
         const comments = await getConnection()
         .query(`
             select * from public.comment c
-            where c."postId" = $1
+            where c."postId" = $1 
+            ${cursor ? 'and c."createdAt" > $3' : ''}
             order by c."createdAt" desc
             limit $2
-        `, [post.id, limit])
+        `, replacements)
 
         if(!comments){
             return null;
         }
-        return comments;
+        return {
+            comments,
+            hasMore : comments.length === realLimit
+        };
     }
 }

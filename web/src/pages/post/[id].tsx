@@ -20,7 +20,8 @@ const Post: NextPage<{postId: number}> = ({postId}) => {
 
     const {data,error,loading} = useQuery(FETCH_POST,{
         variables : {
-            id : postId
+            id : postId,
+            limit : 12
         }
     })
 
@@ -92,7 +93,7 @@ const Post: NextPage<{postId: number}> = ({postId}) => {
                                 {
                                     data?.post?.comments 
                                     ? 
-                                    data?.post?.comments.map(comment => (
+                                    data?.post?.comments.comments.map(comment => (
                                         <Comment key={comment.id} {...comment}></Comment>
                                     ))
                                     :

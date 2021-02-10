@@ -14,12 +14,15 @@ export const FETCH_POSTS = gql`
                     username,
                 }
                 comments(limit : $commentLimit){
-                    id,
-                    text,
-                    creator{
-                        id
-                        username,
-                        url
+                    comments{
+                        id,
+                        text,
+                        creator{
+                            id
+                            username,
+                            url
+                        }
+                        createdAt
                     }
                 }
                 createdAt
@@ -30,7 +33,7 @@ export const FETCH_POSTS = gql`
 `
 
 export const FETCH_POST = gql`
-    query Post($id: Int!, $limit: Int!){
+    query Post($id: Int!, $limit: Int!, $cursor: String){
         post(id : $id){
             id,
             description,
@@ -41,14 +44,18 @@ export const FETCH_POST = gql`
                 url,
                 username,
             }
-            comments(limit : $limit){
-                id,
-                text,
-                creator{
-                    id
-                    username,
-                    url
+            comments(limit: $limit, cursor: $cursor){
+                comments{
+                    id,
+                    text,
+                    creator{
+                        id
+                        username,
+                        url
+                    }
+                    createdAt
                 }
+                hasMore
             }
             createdAt
         }
