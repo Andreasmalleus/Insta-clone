@@ -17,6 +17,7 @@ export const Comment: React.FC<comment> = ({creator, text,likes,createdAt}) => {
             <Box 
                 onClick={() => pushToProfile(router, id)} 
                 cursor="pointer"
+                mr={2}
             >
                 <Avatar src={url != "" ? url : ""} w="30px" h="30px" bg="black"/>
             </Box>
