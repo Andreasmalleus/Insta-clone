@@ -14,7 +14,8 @@ const Index = () => {
 
   const { data : posts} = useQuery(FETCH_POSTS, {
     variables : {
-      limit : 2
+      postLimit : 10,
+      commentLimit : 2
     }
   });  
 
@@ -38,7 +39,7 @@ const Index = () => {
               :
               <Box className="posts" maxW="650px">
                 <Flex direction="column">
-                    {posts.posts.map(post => (
+                    {posts.posts.posts.map(post => (
                       <Post key={post.id} {...post} userId={data?.me.id}></Post>
                     ))}
                 </Flex>

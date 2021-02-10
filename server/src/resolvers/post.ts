@@ -1,4 +1,4 @@
-import { Arg, Field, InputType, Mutation, Query, Resolver, Ctx, UseMiddleware, Int, FieldResolver, Root } from "type-graphql";
+import { Arg, Field, InputType, Mutation, Query, Resolver, Ctx, UseMiddleware, Int, FieldResolver, Root, ObjectType } from "type-graphql";
 import { getConnection } from "typeorm";
 import { Comment } from "../entities/Comment";
 import { Like } from "../entities/Like";
@@ -10,14 +10,6 @@ import AWSApi from "../utils/awsApi";
 import { isAuth } from "../middlewares/isAuth";
 import { User } from "../entities/User";
 
-/*@InputType()
-class CreatePostInput{
-    @Field()
-    description! : string
-    @Field()
-    creatorId! : number
-}*/
-
 @InputType()
 class CommentInput{
     @Field(() => Int!)
@@ -28,24 +20,49 @@ class CommentInput{
     text! : string
 }
 
+@ObjectType()
+class PaginatedPosts{
+    @Field(() => [Post])
+    posts : Post[]
+    @Field()
+    hasMore : boolean
+}
+
 const api = new AWSApi()
 
 @Resolver(Post)
 export class PostResolver{
 
-    @Query(() => [Post], {nullable : true})
+    @Query(() => PaginatedPosts, {nullable : true})
     async posts(
-    ): Promise<Post[] | null>{
+        @Arg("limit", () => Int) limit : number,
+        @Arg("cursor", () => String, {nullable : true}) cursor : string
+    ): Promise<PaginatedPosts | null>{
+        //fetching one more than needed to ensure that there is more
+        const realLimit = Math.min(10, limit) + 1;
+
+        const replacements : any[] = [realLimit]
+
+        if(cursor){
+            replacements.push(new Date(parseInt(cursor)))
+        }
+
         const posts = await getConnection()
         .query(`
             select p.*
             from public.post p
+            ${cursor ? 'where p."createdAt" > $2' : ''}
             order by p."createdAt" desc
-        `)
+            limit $1
+        `, replacements)
         if(!posts){
             return null;
         } 
-        return posts;
+
+        return {
+            posts,
+            hasMore : posts.length === realLimit
+        };
     }
     
     @Query(() => Post, {nullable : true})
