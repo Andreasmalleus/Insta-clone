@@ -17,7 +17,7 @@ type creator = {
     url : string
 }
 
-type comment = {
+type comments = {
     id : number;
     creator :  creator;
     text : string;
@@ -31,7 +31,10 @@ interface PostProps {
     url : string;
     creator : creator;
     likes : number;
-    comments : comment[];
+    comments : {
+        comments : comments[],
+        hasMore : boolean
+    };
     updatedAt : string;
     createdAt : string;
     userId : number
@@ -113,14 +116,14 @@ export const Post: React.FC<PostProps> = ({...props}) => {
                 </Box>
                 {props.comments ?
                     <Box className="comments" fontSize="15px" mx={2}>
-                    {props?.comments.length > 2 
+                    {props?.comments.comments.length > 2 
                         ?
                         <Link color="grey">
                         View all 66 comments
                         </Link>
                         : null
                     }
-                    {props?.comments.map((comment,i) => (
+                    {props?.comments.comments.map((comment,i) => (
                         <Flex className="comment" key={i} justify="space-between" alignItems="center">
                             <Box>
                                 <Link as="span" fontWeight="bold" mr={1} cursor="pointer" onClick={() => pushToProfile(router,comment.creator.id)}>

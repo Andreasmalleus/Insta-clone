@@ -19,7 +19,12 @@ export const Explore: React.FC<ExploreProps> = ({}) => {
 
     const router = useRouter();
 
-    const {data,loading,error} = useQuery(FETCH_POSTS)
+    const {data,loading,error} = useQuery(FETCH_POSTS, {
+        variables : {
+            postLimit : 10,
+            commentLimit : 1
+        }
+    })
 
     if(loading){
         return (
@@ -44,7 +49,7 @@ export const Explore: React.FC<ExploreProps> = ({}) => {
             <Wrapper variant="regular">
                 <Flex direction="column" width="100%">
                     <Flex flexWrap="wrap" mt={6} className="posts" justify="space-between">
-                        {data.posts.map((post,i) => (
+                        {data.posts.posts.map((post,i) => (
                             <Box 
                                 w="31%" h="300px" 
                                 mb={8} key={post.id}

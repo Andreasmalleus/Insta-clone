@@ -15,7 +15,7 @@ const Index = () => {
   const { data : posts} = useQuery(FETCH_POSTS, {
     variables : {
       postLimit : 10,
-      commentLimit : 2
+      commentLimit : 1
     }
   });  
 
